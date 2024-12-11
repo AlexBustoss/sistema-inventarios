@@ -7,19 +7,36 @@ const db = require('../src/config/db.js');
 const usuariosRoutes = require('../src/routes/usuarios.routes.js'); // Importar las rutas de usuarios
 const requisicionesRoutes = require('../src/routes/requisiciones.routes.js'); // Importar las rutas de requisiciones
 const detalleRequisicionesRoutes = require('../src/routes/detalleRequisiciones.routes.js'); // Importar las rutas de detalle_requisiciones
+const piezasRoutes = require('../src/routes/piezas.routes'); // Importar las rutas de piezas
+const ordenesPiezasRoutes = require('../src/routes/ordenesPiezas.routes'); // Importar las rutas de ordenesPiezas
+const estadosRequisicionRoutes = require('../src/routes/estadosRequisicion.routes'); // Importar las rutas de estadosRequisicion
+
+
+
 
 
 
 const swaggerUi = require('swagger-ui-express'); // Importar Swagger UI
 const swaggerDocs = require('./swaggerConfig'); // Configuración de Swagger
 
-// Swagger - Interfaz de documentación
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+// Habilitar o deshabilitar Swagger basado en el entorno
+if (process.env.NODE_ENV !== 'development') {
+    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+    console.log('Swagger habilitado');
+} else {
+    console.log('Swagger deshabilitado en modo desarrollo');
+}
 
 app.use(express.json()); // Middleware para procesar JSON
 app.use('/api', usuariosRoutes); // Prefijo '/api' para las rutas de usuarios
 app.use('/api/requisiciones', requisicionesRoutes); // Prefijo '/api/requisiciones' para las rutas de requisiciones
-app.use('/api/detalle_requisiciones', detalleRequisicionesRoutes);
+app.use('/api/detalle_requisiciones', detalleRequisicionesRoutes); // Prefijo '/api/detalle_requisiciones' para las rutas de detalle_requisiciones
+app.use('/api/piezas', piezasRoutes); // Prefijo '/api/piezas' para las rutas de piezas
+app.use('/api/ordenes_piezas', ordenesPiezasRoutes); // Prefijo '/api/ordenes_piezas' para las rutas de ordenes_piezas
+app.use('/api/estados_requisicion', estadosRequisicionRoutes); // Prefijo '/api/estados_requisicion' para las rutas de estados_requisicion
+
+
+
 
 
 // Middleware para parsear JSON
