@@ -10,6 +10,9 @@ const detalleRequisicionesRoutes = require('../src/routes/detalleRequisiciones.r
 const piezasRoutes = require('../src/routes/piezas.routes'); // Importar las rutas de piezas
 const ordenesPiezasRoutes = require('../src/routes/ordenesPiezas.routes'); // Importar las rutas de ordenesPiezas
 const estadosRequisicionRoutes = require('../src/routes/estadosRequisicion.routes'); // Importar las rutas de estadosRequisicion
+const marcasPiezasRoutes = require('../src/routes/marcasPiezas.routes'); // Importar las rutas de marcasPiezas
+ const movimientosInventarioRoutes = require('../src/routes/movimientos_inventario.routes.js'); // Importar las rutas de movimientosInventario
+
 
 
 
@@ -34,6 +37,9 @@ app.use('/api/detalle_requisiciones', detalleRequisicionesRoutes); // Prefijo '/
 app.use('/api/piezas', piezasRoutes); // Prefijo '/api/piezas' para las rutas de piezas
 app.use('/api/ordenes_piezas', ordenesPiezasRoutes); // Prefijo '/api/ordenes_piezas' para las rutas de ordenes_piezas
 app.use('/api/estados_requisicion', estadosRequisicionRoutes); // Prefijo '/api/estados_requisicion' para las rutas de estados_requisicion
+app.use('/api/marcas_piezas', marcasPiezasRoutes); // Prefijo '/api/marcas_piezas' para las rutas de marcas_piezas
+app.use('/api/movimientos_inventario', movimientosInventarioRoutes); // Prefijo '/api/movimientos_inventario' para las rutas de movimientos_inventario
+
 
 
 
