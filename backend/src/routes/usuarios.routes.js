@@ -195,7 +195,7 @@ router.post('/usuarios', async (req, res) => {
             [Nombre, Email, Rol]
         );        
 
-        // Enviar la respuesta con el usuario insertado
+        // Enviar la respuesta con el usuario creado
         res.status(201).json(nuevoUsuario.rows[0]);
     } catch (err) {
         console.error('Error al crear usuario:', err.message); // Mostrar error exacto en la consola

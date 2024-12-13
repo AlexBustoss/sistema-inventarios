@@ -7,6 +7,7 @@ const pool = require('../config/db'); // Conexión a la base de datos
  */
 
 
+
 /**
  * @swagger
  * /requisiciones:

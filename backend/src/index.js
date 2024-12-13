@@ -11,7 +11,11 @@ const piezasRoutes = require('../src/routes/piezas.routes'); // Importar las rut
 const ordenesPiezasRoutes = require('../src/routes/ordenesPiezas.routes'); // Importar las rutas de ordenesPiezas
 const estadosRequisicionRoutes = require('../src/routes/estadosRequisicion.routes'); // Importar las rutas de estadosRequisicion
 const marcasPiezasRoutes = require('../src/routes/marcasPiezas.routes'); // Importar las rutas de marcasPiezas
- const movimientosInventarioRoutes = require('../src/routes/movimientos_inventario.routes.js'); // Importar las rutas de movimientosInventario
+const movimientosInventarioRoutes = require('../src/routes/movimientos_inventario.routes.js'); // Importar las rutas de movimientosInventario
+const piezasProveedoresRoutes = require('../src/routes/piezasProveedores.routes.js'); // Importar las rutas de piezasProveedores
+const proveedoresRoutes = require('../src/routes/proveedores.routes.js'); // Importar las rutas de proveedores
+const ubicacionesProveedoresRoutes = require('../src/routes/ubicacionesProveedores.routes.js'); // Importar las rutas de ubicacionesProveedores
+const unidadesMedidaRoutes = require('../src/routes/unidadesMedida.routes.js'); // Importar las rutas de unidadesMedida
 
 
 
@@ -39,6 +43,10 @@ app.use('/api/ordenes_piezas', ordenesPiezasRoutes); // Prefijo '/api/ordenes_pi
 app.use('/api/estados_requisicion', estadosRequisicionRoutes); // Prefijo '/api/estados_requisicion' para las rutas de estados_requisicion
 app.use('/api/marcas_piezas', marcasPiezasRoutes); // Prefijo '/api/marcas_piezas' para las rutas de marcas_piezas
 app.use('/api/movimientos_inventario', movimientosInventarioRoutes); // Prefijo '/api/movimientos_inventario' para las rutas de movimientos_inventario
+app.use('/api/piezas_proveedores', piezasProveedoresRoutes); // Prefijo '/api/piezas_proveedores' para las rutas de piezas_proveedores
+app.use('/api/proveedores', proveedoresRoutes); // Prefijo '/api/proveedores' para las rutas de proveedores
+app.use('/api/ubicaciones_proveedores', ubicacionesProveedoresRoutes); // Prefijo '/api/ubicaciones_proveedores' para las rutas de ubicaciones_proveedores
+app.use('/api/unidades_medida', unidadesMedidaRoutes); // Prefijo '/api/unidades_medida' para las rutas de unidades_medida
 
 
 
