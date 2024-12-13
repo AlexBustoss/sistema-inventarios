@@ -6,6 +6,19 @@ const pool = require('../config/db'); // Conexión a la base de datos
  * CRUD para Requisiciones
  */
 
+// Aceptar una requisición
+router.put('/:id/aceptar', async (req, res, next) => {
+    const { id } = req.params;
+    try {
+        // Delegar la lógica al controlador
+        const resultado = await require('../controllers/requisiciones.controller').aceptarRequisicion(id);
+        res.status(200).json({ message: 'Requisición aceptada exitosamente', resultado });
+    } catch (error) {
+        next(error); // Delegar manejo de errores
+    }
+});
+
+
 
 
 /**
@@ -602,6 +615,8 @@ router.delete('/:id', async (req, res) => {
         res.status(500).json({ error: 'Error al eliminar requisición' });
     }
 });
+
+
 
 
 

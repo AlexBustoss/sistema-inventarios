@@ -16,6 +16,7 @@ const piezasProveedoresRoutes = require('../src/routes/piezasProveedores.routes.
 const proveedoresRoutes = require('../src/routes/proveedores.routes.js'); // Importar las rutas de proveedores
 const ubicacionesProveedoresRoutes = require('../src/routes/ubicacionesProveedores.routes.js'); // Importar las rutas de ubicacionesProveedores
 const unidadesMedidaRoutes = require('../src/routes/unidadesMedida.routes.js'); // Importar las rutas de unidadesMedida
+const manejarErrores = require('../src/middlewares/manejarErrores.js'); // Importar middleware para manejar errores
 
 
 
@@ -47,6 +48,7 @@ app.use('/api/piezas_proveedores', piezasProveedoresRoutes); // Prefijo '/api/pi
 app.use('/api/proveedores', proveedoresRoutes); // Prefijo '/api/proveedores' para las rutas de proveedores
 app.use('/api/ubicaciones_proveedores', ubicacionesProveedoresRoutes); // Prefijo '/api/ubicaciones_proveedores' para las rutas de ubicaciones_proveedores
 app.use('/api/unidades_medida', unidadesMedidaRoutes); // Prefijo '/api/unidades_medida' para las rutas de unidades_medida
+app.use(manejarErrores); // Middleware para manejar errores
 
 
 
