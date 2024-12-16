@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('../config/db'); // Conexión a la base de datos
+const { initPool } = require('../config/db'); // Importa initPool
+const pool = initPool(); // Llama a la función para inicializar el pool
+const { body, validationResult } = require('express-validator');
+const bcrypt = require('bcrypt');
 
 /**
  * @swagger
@@ -87,22 +90,38 @@ router.get('/usuarios', async (req, res) => {
 
 
 // Actualizar un usuario existente
-router.put('/usuarios/:id', async (req, res) => {
-    const { id } = req.params; // ID del usuario a actualizar
-    const { nombre, email, rol } = req.body; // Datos enviados desde el frontend o Postman
-    try {
-        const query = 'UPDATE usuarios SET "Nombre" = $1, "Email" = $2, "Rol" = $3 WHERE "ID_Usuario" = $4 RETURNING *';
-        const values = [nombre, email, rol, id];
-        const result = await pool.query(query, values);
-        if (result.rowCount === 0) {
-            return res.status(404).json({ error: 'Usuario no encontrado' });
+router.put(
+    '/usuarios/:id',
+    [
+        body('nombre').notEmpty().withMessage('El nombre es obligatorio'),
+        body('email').isEmail().withMessage('Debe ser un correo válido'),
+        body('rol').notEmpty().withMessage('El rol es obligatorio'),
+    ],
+    async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
         }
-        res.status(200).json(result.rows[0]); // Devolvemos el usuario actualizado
-    } catch (error) {
-        console.error('Error al actualizar usuario:', error);
-        res.status(500).json({ error: 'Error al actualizar usuario' });
+
+        const { id } = req.params;
+        const { nombre, email, rol } = req.body;
+
+        try {
+            const query =
+                'UPDATE usuarios SET "Nombre" = $1, "Email" = $2, "Rol" = $3 WHERE "ID_Usuario" = $4 RETURNING *';
+            const values = [nombre, email, rol, id];
+            const result = await pool.query(query, values);
+
+            if (result.rowCount === 0) {
+                return res.status(404).json({ error: 'Usuario no encontrado' });
+            }
+            res.status(200).json(result.rows[0]);
+        } catch (error) {
+            console.error('Error al actualizar usuario:', error);
+            res.status(500).json({ error: 'Error al actualizar usuario' });
+        }
     }
-});
+);
 
 /**
  * @swagger
@@ -177,31 +196,51 @@ router.delete('/usuarios/:id', async (req, res) => {
  */
 
 //Agregar usuario 
-router.post('/usuarios', async (req, res) => {
-    const { Nombre, Email, Rol } = req.body;
+router.post(
+    '/usuarios',
+    [
+        body('Nombre').notEmpty().withMessage('El nombre es obligatorio'),
+        body('Email').isEmail().withMessage('Debe ser un correo válido'),
+        body('Rol').notEmpty().withMessage('El rol es obligatorio'),
+        body('Password').isLength({ min: 6 }).withMessage('La contraseña debe tener al menos 6 caracteres'),
+    ],
+    async (req, res) => {
+        // Validar errores en el request
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
 
-    // Depurar: mostrar los valores recibidos
-    console.log('Datos recibidos:', req.body);
+        try {
+            // Extraer datos del cuerpo
+            const { Nombre, Email, Rol, Password } = req.body; // Esto debería funcionar ahora
 
-    // Validar que los campos necesarios están presentes
-    if (!Nombre || !Email || !Rol) {
-        return res.status(400).json({ error: 'Por favor, proporciona Nombre, Email y Rol.' });
+            // Hashear la contraseña
+            const hashedPassword = await bcrypt.hash(Password, 10);
+
+            // Insertar el nuevo usuario
+            const nuevoUsuario = await pool.query(
+                'INSERT INTO usuarios ("Nombre", "Email", "Rol", "Password") VALUES ($1, $2, $3, $4) RETURNING *',
+                [Nombre, Email, Rol, hashedPassword]
+            );
+
+            // Devolver la respuesta sin la contraseña
+            const { ID_Usuario, Nombre: nombre, Email: email, Rol: rol } = nuevoUsuario.rows[0];
+            res.status(201).json({
+                message: 'Usuario creado con éxito',
+                usuario: { ID_Usuario, Nombre: nombre, Email: email, Rol: rol },
+            });
+        } catch (err) {
+            console.error('Error al crear usuario:', err.message);
+
+            if (err.code === '23505') {
+                return res.status(400).json({ error: 'El correo ya está registrado' });
+            }
+            res.status(500).json({ error: 'Error al agregar el usuario' });
+        }
     }
+);
 
-    try {
-        // Insertar el nuevo usuario en la base de datos
-        const nuevoUsuario = await pool.query(
-            'INSERT INTO usuarios ("Nombre", "Email", "Rol") VALUES ($1, $2, $3) RETURNING *',
-            [Nombre, Email, Rol]
-        );        
-
-        // Enviar la respuesta con el usuario creado
-        res.status(201).json(nuevoUsuario.rows[0]);
-    } catch (err) {
-        console.error('Error al crear usuario:', err.message); // Mostrar error exacto en la consola
-        res.status(500).json({ error: 'Error al agregar el usuario' });
-    }
-});
 
 
 

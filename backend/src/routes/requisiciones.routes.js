@@ -18,7 +18,17 @@ router.put('/:id/aceptar', async (req, res, next) => {
     }
 });
 
-
+// Ruta para cancelar una requisición
+router.put('/:id/cancelar', async (req, res, next) => {
+    const { id } = req.params;
+    try {
+        // Delegar la lógica al controlador
+        const resultado = await require('../controllers/requisiciones.controller').cancelarRequisicion(id);
+        res.status(200).json({ message: 'Requisición cancelada exitosamente', resultado });
+    } catch (error) {
+        next(error); // Delegar manejo de errores
+    }
+});
 
 
 /**
