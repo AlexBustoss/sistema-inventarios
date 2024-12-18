@@ -1,4 +1,5 @@
 require('dotenv').config(); // Cargar variables de entorno desde el archivo .env
+console.log('Clave secreta JWT_SECRET:', process.env.JWT_SECRET);
 const express = require('express');
 const { initPool, closePool } = require('./config/db'); // Importar funciones de conexión a la base de datos
 
@@ -21,10 +22,10 @@ const piezasProveedoresRoutes = require('./routes/piezasProveedores.routes.js');
 const proveedoresRoutes = require('./routes/proveedores.routes.js');
 const ubicacionesProveedoresRoutes = require('./routes/ubicacionesProveedores.routes.js');
 const unidadesMedidaRoutes = require('./routes/unidadesMedida.routes.js');
-const authRoutes = require('./routes/auth.routes.js');
+const authRoutes = require('../src/routes/auth.routes.js');
 
 // Importar middleware para manejo de errores
-const manejarErrores = require('./middlewares/manejarErrores.js');
+const manejarErrores = require('./middlewares/validarErrores.js');
 
 // Importar Swagger para la documentación
 const swaggerUi = require('swagger-ui-express');
