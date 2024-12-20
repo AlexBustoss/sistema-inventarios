@@ -18,10 +18,10 @@
 
 .low-stock-container h2 {
   font-size: 1.8rem;
-    padding-bottom: 3.5rem; /* Reemplaza margin-bottom */
-    margin: 0; /* Asegura que no haya margen residual */
-    color: #444;
-    text-align: center;
+  padding-bottom: 3.5rem; /* Reemplaza margin-bottom */
+  margin: 0; /* Asegura que no haya margen residual */
+  color: #444;
+  text-align: center;
 }
 
 .low-stock-wrapper {
@@ -49,6 +49,9 @@
   font-size: 1rem;
   color: #333;
   border-bottom: 1px solid #ddd;
+  width: auto; /* Permite que las columnas se ajusten al contenido */
+  text-align: center; /* Centra el texto horizontalmente */
+  border-bottom: 1px solid #ddd; /* Línea divisoria */
 }
 
 .low-stock-table th {
@@ -64,7 +67,44 @@
   border-bottom: none;
 }
 
+/* Estilos dinámicos para la cantidad */
 .low-quantity {
   font-weight: bold;
-  color: #d9534f;
+  padding: 5px 10px; /* Espaciado interno */
+  border-radius: 8px; /* Bordes redondeados */
+  display: flex; /* Cambiar a flexbox */
+  justify-content: center; /* Centrar horizontalmente */
+  align-items: center; /* Centrar verticalmente */
+  font-size: 0.9rem; /* Ajusta el tamaño del texto */
+  margin: 0 auto; /* Centrar el recuadro en su celda */
+  width: fit-content; /* Ajusta el ancho al contenido */
 }
+
+
+/* Bajo stock */
+.stock-low {
+  color: #f44336; /* Texto rojo */
+  background-color: #ffebee; /* Fondo rojo claro */
+  border: 1px solid #ef9a9a; /* Borde rojo */
+}
+
+/* Stock medio */
+.stock-medium {
+  color: #ff9800; /* Texto naranja */
+  background-color: #fff3e0; /* Fondo naranja claro */
+  border: 1px solid #ffa726; /* Borde naranja */
+}
+
+/* Stock alto */
+.stock-high {
+  color: #4caf50; /* Texto verde */
+  background-color: #e8f5e9; /* Fondo verde claro */
+  border: 1px solid #81c784; /* Borde verde */
+}
+
+
+.low-quantity.highlight-low {
+  color: #d9534f; /* Rojo para cantidades bajas */
+}
+
+

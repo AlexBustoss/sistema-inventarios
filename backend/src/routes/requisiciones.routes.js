@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('../config/db'); // Conexión a la base de datos
+const { getPool } = require('../config/db'); // Importa getPool
+const pool = getPool(); // Obtén el pool inicializado
 
 /**
  * CRUD para Requisiciones
