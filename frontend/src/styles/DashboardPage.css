@@ -1,0 +1,152 @@
+.dashboard-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: linear-gradient(to bottom, #f3f4f6, #ffffff);
+    padding: 2rem;
+    box-sizing: border-box;
+  }
+  
+  .dashboard-metrics {
+    display: flex;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin: 2rem auto;
+    width: 90%;
+    max-width: 1200px;
+  }
+  
+  .metrics-card {
+    flex: 1;
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column; /* Alineación vertical */
+    align-items: center;
+    justify-content: space-between;
+    text-align: center;
+    gap: 1rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .metrics-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  .metrics-card h3 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+  }
+  
+  .metrics-card .value {
+    font-size: 2.5rem;
+    font-weight: bold;
+  }
+  
+  .metrics-card .icon {
+    font-size: 2.5rem;
+    color: #444;
+  }
+  
+  .metrics-card.blue {
+    border-top: 5px solid #007bff;
+    background: linear-gradient(to bottom, #e7f0ff, #ffffff);
+  }
+  
+  .metrics-card.red {
+    border-top: 5px solid #dc3545;
+    background: linear-gradient(to bottom, #ffe7e7, #ffffff);
+  }
+  
+  .metrics-card.green {
+    border-top: 5px solid #28a745;
+    background: linear-gradient(to bottom, #e7ffe7, #ffffff);
+  }
+  
+  .inventory-table-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    width: 90%;
+    max-width: 1200px;
+    margin: 2rem auto;
+  }
+  
+  .inventory-section,
+  .low-stock-section {
+    flex: 1;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .inventory-section:hover,
+  .low-stock-section:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  .inventory-section h2,
+  .low-stock-section h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: #444;
+    text-align: center;
+  }
+  
+  .table-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    width: 100%;
+  }
+  
+  .navigation-buttons-container {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+  
+  .navigation-buttons-container button {
+    padding: 1rem 1.5rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+  
+  .navigation-buttons-container button:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+  }
+
+  
+  .dashboard-content-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    width: 90%;
+    max-width: 1200px;
+    margin: 2rem auto;
+  }
+  
+  .inventory-section {
+    flex: 2; /* Asigna más espacio a esta sección */
+  }
+  
+  .low-stock-section {
+    flex: 1; /* Asigna menos espacio a esta sección */
+  }
+  
+  
+  

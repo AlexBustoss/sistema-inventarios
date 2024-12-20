@@ -23,6 +23,8 @@ const proveedoresRoutes = require('./routes/proveedores.routes.js');
 const ubicacionesProveedoresRoutes = require('./routes/ubicacionesProveedores.routes.js');
 const unidadesMedidaRoutes = require('./routes/unidadesMedida.routes.js');
 const authRoutes = require('../src/routes/auth.routes.js');
+const cors = require('cors'); // Importar el middleware CORS
+
 
 // Importar middleware para manejo de errores
 const manejarErrores = require('./middlewares/validarErrores.js');
@@ -41,6 +43,13 @@ if (process.env.NODE_ENV === 'development') {
 
 // Middleware para procesar JSON
 app.use(express.json());
+
+// Habilitar CORS para permitir solicitudes desde el frontend
+app.use(cors({
+    origin: "http://localhost:5173", // URL del frontend
+    methods: ["GET", "POST", "PUT", "DELETE"], // Métodos permitidos
+    allowedHeaders: ["Content-Type", "Authorization"] // Encabezados permitidos
+}));
 
 // Registrar las rutas
 app.use('/api', usuariosRoutes);
@@ -64,6 +73,7 @@ app.get('/', (req, res) => {
 
 // Middleware para manejar errores globalmente
 app.use(manejarErrores);
+
 
 // Iniciar el servidor solo si no está en modo de prueba
 if (process.env.NODE_ENV !== 'test') {

@@ -1,0 +1,57 @@
+.navigation-buttons-container {
+  display: flex;
+  justify-content: center; /* Centra los botones horizontalmente */
+  align-items: center; /* Alinea los botones verticalmente */
+  gap: 1.5rem; /* Espaciado entre botones */
+  margin: 2rem auto; /* Centra el contenedor en la página */
+  width: 90%; /* Asegura que no ocupe más del 90% del ancho */
+  max-width: 1200px; /* Limita el ancho máximo */
+}
+
+
+.navigation-button {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  color: #fff;
+  border: none;
+  border-radius: 15px;
+  font-size: 1rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.navigation-button:hover {
+  transform: translateY(-5px);
+  background: linear-gradient(135deg, #5bc0de, #007bff);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.navigation-button:active {
+  transform: translateY(2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.navigation-button:focus {
+  outline: none;
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+}
+
+.button-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.button-text {
+  font-size: 1.1rem;
+  font-weight: bold;
+  text-align: center;
+  letter-spacing: 0.5px;
+}

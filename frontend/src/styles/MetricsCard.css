@@ -1,0 +1,47 @@
+.metrics-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  color: #fff;
+  text-align: center;
+}
+
+.metrics-card-red {
+  background-color: #d9534f;
+}
+
+.metrics-card-yellow {
+  background-color: #f0ad4e;
+}
+
+.metrics-card-blue {
+  background-color: #5bc0de;
+}
+
+.metrics-card-title {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.metrics-card-value {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.metrics-card-description {
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  color: #090909;
+  font-weight: 400;
+}
+
+.metrics-card .icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
