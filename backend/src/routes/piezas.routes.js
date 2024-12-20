@@ -15,13 +15,14 @@ router.get('/', async (req, res) => {
     }
 });
 
-// Obtener piezas con bajo stock
+// Obtener piezas con bajo stock, ordenadas por Stock_Actual
 router.get('/bajo-stock', async (req, res) => {
     try {
         const result = await pool.query(`
             SELECT * 
-            FROM piezas
-            WHERE "Stock_Actual" < "Stock_Minimo"
+            FROM piezas 
+            WHERE "Stock_Actual" < "Stock_Minimo" 
+            ORDER BY "Stock_Actual" ASC
         `);
         res.status(200).json(result.rows);
     } catch (error) {

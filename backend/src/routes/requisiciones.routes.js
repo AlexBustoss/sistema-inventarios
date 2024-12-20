@@ -96,16 +96,18 @@ router.put('/:id/cancelar', async (req, res, next) => {
  */
 
 
-// Obtener todas las requisiciones
+// Obtener todas las requisiciones, ordenadas por fecha descendente
 router.get('/', async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM requisiciones');
+        // Consulta SQL para obtener requisiciones ordenadas por fecha más reciente
+        const result = await pool.query('SELECT * FROM requisiciones ORDER BY "Fecha" DESC');
         res.status(200).json(result.rows);
     } catch (error) {
         console.error('Error al obtener requisiciones:', error);
         res.status(500).json({ error: 'Error al obtener requisiciones' });
     }
 });
+
 
 /**
  * @swagger
@@ -601,7 +603,6 @@ router.put('/:id', async (req, res) => {
  */
 
 
-// Eliminar una requisición existente
 // Eliminar una requisición existente
 router.delete('/:id', async (req, res) => {
     const { id } = req.params; // ID de la requisición a eliminar

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('../config/db');
+const { getPool } = require('../config/db'); // Importa getPool correctamente
+const pool = getPool(); // Obtén el pool inicializado
 
 /**
  * CRUD para la entidad Proveedores
@@ -35,6 +36,18 @@ router.get('/', async (req, res) => {
     } catch (error) {
         console.error('Error al obtener proveedores:', error);
         res.status(500).json({ error: 'Error al obtener proveedores' });
+    }
+});
+
+// Ruta para contar proveedores
+router.get('/count', async (req, res) => {
+    try {
+        const query = 'SELECT COUNT(*) AS total FROM proveedores';
+        const result = await pool.query(query);
+        res.status(200).json({ total: parseInt(result.rows[0].total, 10) });
+    } catch (error) {
+        console.error('Error al contar proveedores:', error);
+        res.status(500).json({ error: 'Error al contar proveedores' });
     }
 });
 
@@ -248,5 +261,7 @@ router.delete('/:id', async (req, res) => {
         res.status(500).json({ error: 'Error al eliminar proveedor' });
     }
 });
+
+
 
 module.exports = router;

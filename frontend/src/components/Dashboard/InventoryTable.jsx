@@ -24,7 +24,7 @@ const InventoryTable = () => {
 
   return (
     <div className="inventory-table-container">
-      <h2>Resumen del Inventario</h2>
+      <h2>Ultimas requisiciones</h2>
       <div className="inventory-table-wrapper">
         <table className="inventory-table">
           <thead>
