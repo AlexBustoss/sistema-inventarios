@@ -1,0 +1,136 @@
+/* Contenedor principal con scroll */
+.piezas-table-container {
+    margin: 1rem auto; /* Ajusta el margen externo */
+    padding: 0; /* Elimina padding interno adicional */
+    width: 98%; /* Ocupa más espacio horizontal */
+    background-color: #ffffff; /* Fondo blanco */
+    border-radius: 10px; /* Bordes redondeados */
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    overflow: auto; /* Scroll en ambas direcciones */
+    max-height: calc(100vh - 160px); /* Altura dinámica para evitar solapamiento */
+    max-width: 100%;
+    position: relative; /* Necesario para encabezados sticky */
+}
+
+
+/* Título de la tabla */
+.table-title {
+    font-size: 1.8rem; /* Tamaño grande */
+    color: #333; /* Color oscuro */
+    margin-bottom: 1.5rem; /* Separación inferior */
+    text-align: center; /* Centrado */
+    font-weight: 600; /* Peso del texto */
+    text-transform: uppercase; /* Letras mayúsculas */
+    letter-spacing: 1px; /* Espaciado entre letras */
+}
+
+/* Tabla general */
+.piezas-table {
+    width: 100%; /* Tabla ocupa todo el ancho */
+    border-collapse: collapse; /* Sin espacios entre celdas */
+    min-width: 700px; /* Ancho mínimo */
+}
+
+/* Encabezado de tabla fijo */
+.piezas-table th {
+    background: linear-gradient(to bottom, #0056b3, #007bff); /* Fondo gradiente */
+    color: #ffffff; /* Texto blanco */
+    font-weight: 700; /* Texto en negrita */
+    position: sticky; /* Encabezado fijo */
+    top: 0; /* Fijado al borde superior */
+    z-index: 2; /* Por encima del resto */
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+    padding: 0.4rem 1rem; /* Ajusta el espaciado interno */
+    text-transform: uppercase; /* Letras en mayúsculas */
+    letter-spacing: 0.5px; /* Espaciado entre letras */
+    line-height: 1; /* Compacta el espacio vertical */
+    vertical-align: middle; /* Centra verticalmente el texto */
+    text-align: center; /* Centra horizontalmente */
+    margin: 0; /* Elimina márgenes externos */
+}
+
+
+
+.piezas-table thead {
+    margin: 0; /* Elimina márgenes externos */
+    padding: 0; /* Elimina relleno interno */
+    line-height: 1; /* Asegura que el texto sea compacto */
+    border-collapse: collapse; /* Elimina cualquier espacio entre celdas */
+}
+
+
+
+/* Filas de tabla */
+.piezas-table td {
+    border: 1px solid #ddd; /* Bordes suaves */
+    text-align: center; /* Texto centrado */
+    padding: 0.9rem; /* Espaciado interno */
+    font-size: 0.95rem; /* Tamaño del texto */
+    color: #555; /* Texto gris oscuro */
+    white-space: nowrap; /* Evita saltos de línea */
+}
+
+/* Fondo alternado para las filas */
+.piezas-table tr:nth-child(even) {
+    background-color: #f8f9fa; /* Fondo claro */
+}
+
+.piezas-table tr:hover {
+    background-color: #e2e6ea; /* Fondo al pasar el mouse */
+    transform: scale(1.01); /* Sutil efecto de zoom */
+    transition: all 0.2s ease-in-out; /* Animación suave */
+}
+
+/* Botones */
+.edit-button {
+    background-color: #28a745; /* Verde */
+    color: white; /* Texto blanco */
+    border: none;
+    border-radius: 5px; /* Bordes redondeados */
+    padding: 0.6rem 1rem; /* Espaciado interno */
+    cursor: pointer; /* Cursor de mano */
+    margin-right: 0.5rem; /* Separación entre botones */
+    transition: all 0.3s ease; /* Transición suave */
+    font-size: 0.9rem; /* Tamaño del texto */
+}
+
+.edit-button:hover {
+    background-color: #218838; /* Verde más oscuro */
+    transform: translateY(-2px); /* Efecto de elevación */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15); /* Sombra */
+}
+
+.delete-button {
+    background-color: #dc3545; /* Rojo */
+    color: white; /* Texto blanco */
+    border: none;
+    border-radius: 5px; /* Bordes redondeados */
+    padding: 0.6rem 1rem; /* Espaciado interno */
+    cursor: pointer; /* Cursor de mano */
+    font-size: 0.9rem; /* Tamaño del texto */
+    transition: all 0.3s ease; /* Transición suave */
+}
+
+.delete-button:hover {
+    background-color: #bd2130; /* Rojo más oscuro */
+    transform: translateY(-2px); /* Efecto de elevación */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15); /* Sombra */
+}
+
+/* Mensaje de "No hay datos" */
+.no-data {
+    text-align: center; /* Centrado */
+    color: #888; /* Texto gris */
+    font-style: italic; /* Estilo cursiva */
+    padding: 1.5rem; /* Espaciado interno */
+    font-size: 1rem; /* Tamaño del texto */
+    background-color: #f8f9fa; /* Fondo claro */
+    border-radius: 8px; /* Bordes redondeados */
+}
+
+/* Ajuste adicional para el contenedor */
+.piezas-content {
+    max-width: 1600px; /* Contenedor más amplio */
+    margin: 0 auto; /* Centrado horizontal */
+    padding: 1rem; /* Espaciado interno */
+}

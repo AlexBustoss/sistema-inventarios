@@ -4,11 +4,15 @@ import MetricsCard from "../components/Dashboard/MetricsCard";
 import InventoryTable from "../components/Dashboard/InventoryTable";
 import LowStockItems from "../components/Dashboard/LowStockItems";
 import NavigationButtons from "../components/Dashboard/NavigationButtons";
+import { useNavigate } from "react-router-dom"; // Importamos el hook para la navegación
 import "../styles/DashboardPage.css";
 import { getAllPiezas, getLowStockPiezas } from "../services/piezasService"; // Importamos los servicios para consumir APIs
 import { getProveedorCount } from "../services/proveedoresService";
+import { FiSettings, FiPackage, FiFileText, FiBarChart2 } from "react-icons/fi"; // Íconos de react-icons
 
 const DashboardPage = () => {
+  const navigate = useNavigate(); // Hook para navegación
+
   const [inventoryData, setInventoryData] = useState([]);
   const [lowStockItems, setLowStockItems] = useState([]);
   const [metrics, setMetrics] = useState({
@@ -17,12 +21,37 @@ const DashboardPage = () => {
     proveedoresActivos: 0,
   });
 
+  const dashboardButtons = [
+    {
+      id: 1,
+      text: "Gestión de Piezas",
+      icon: <FiSettings />,
+      onClick: () => navigate("/gestion-piezas"),
+    },
+    {
+      id: 2,
+      text: "Gestión de Proveedores",
+      icon: <FiPackage />,
+      onClick: () => navigate("/gestion-proveedores"),
+    },
+    {
+      id: 3,
+      text: "Gestión de Requisiciones",
+      icon: <FiFileText />,
+      onClick: () => navigate("/gestion-requisiciones"),
+    },
+    {
+      id: 4,
+      text: "Reportes",
+      icon: <FiBarChart2 />,
+      onClick: () => navigate("/reportes"),
+    },
+  ];
+
   // Agrega y elimina la clase CSS de la página
   useEffect(() => {
-    console.log("DashboardPage montado, agregando clase CSS a body");
     document.body.classList.add("dashboard");
     return () => {
-      console.log("DashboardPage desmontado, eliminando clase CSS de body");
       document.body.classList.remove("dashboard");
     };
   }, []);
@@ -31,31 +60,13 @@ const DashboardPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log("Iniciando fetchData para obtener datos del backend");
-
-        // Obtener datos de todas las piezas
         const allPiezas = await getAllPiezas();
-        console.log("Datos de todas las piezas obtenidos:", allPiezas);
-
-        // Obtener datos de piezas con bajo stock
         const lowStockPiezas = await getLowStockPiezas();
-        console.log("Datos de piezas con bajo stock obtenidos:", lowStockPiezas);
-
-        // Obtener conteo de proveedores activos
         const proveedoresCount = await getProveedorCount();
-        console.log("Proveedores Activos obtenidos:", proveedoresCount);
 
-        // Actualizar estado con los datos obtenidos
         setInventoryData(allPiezas);
         setLowStockItems(lowStockPiezas);
-
         setMetrics({
-          totalPiezas: allPiezas.length,
-          stockBajo: lowStockPiezas.length,
-          proveedoresActivos: proveedoresCount,
-        });
-
-        console.log("Estado metrics actualizado:", {
           totalPiezas: allPiezas.length,
           stockBajo: lowStockPiezas.length,
           proveedoresActivos: proveedoresCount,
@@ -65,16 +76,15 @@ const DashboardPage = () => {
       }
     };
 
-    fetchData(); // Ejecutamos la función para cargar los datos
+    fetchData();
   }, []);
-
-  console.log("Renderizando DashboardPage con metrics:", metrics);
 
   return (
     <div className="dashboard-page">
-      <Header />
+      {/* Header con título dinámico */}
+      <Header title="Dashboard" />
       <div className="dashboard-metrics">
-        {/* Tarjetas con las métricas actualizadas */}
+        {/* Tarjetas con métricas */}
         <MetricsCard
           title="Total piezas"
           value={metrics.totalPiezas}
@@ -89,24 +99,22 @@ const DashboardPage = () => {
         />
         <MetricsCard
           title="Proveedores Activos"
-          value={metrics.proveedoresActivos} // [MODIFICADO] Ahora es dinámico
+          value={metrics.proveedoresActivos}
           color="green"
           icon="users"
         />
       </div>
       <div className="dashboard-content-row">
         <div className="inventory-section">
-          {/* Tabla de inventario */}
           <InventoryTable inventoryData={inventoryData} />
         </div>
         <div className="low-stock-section">
-          {/* Sección de items con bajo stock */}
           <LowStockItems lowStockItems={lowStockItems} />
         </div>
       </div>
       <div className="navigation-buttons-container">
-        {/* Botones de navegación */}
-        <NavigationButtons />
+        {/* Pasamos los botones dinámicamente */}
+        <NavigationButtons buttons={dashboardButtons} />
       </div>
     </div>
   );

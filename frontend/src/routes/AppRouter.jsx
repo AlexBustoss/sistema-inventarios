@@ -2,42 +2,59 @@ import React, { useEffect, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "../pages/LoginPage";
 import DashboardPage from "../pages/DashboardPage";
+import PiezasPage from "../pages/PiezasPage";
 
 const AppRouter = () => {
-  const [token, setToken] = useState(localStorage.getItem("token")); // Estado para el token
+  const [token, setToken] = useState(() => localStorage.getItem("token")); // Estado inicial del token
 
-  // Escuchar cambios en localStorage
+  // Actualiza el token cuando cambie en localStorage
   useEffect(() => {
-    const checkToken = () => setToken(localStorage.getItem("token"));
-    window.addEventListener("storage", checkToken);
-    return () => window.removeEventListener("storage", checkToken);
+    const handleStorageChange = () => {
+      const storedToken = localStorage.getItem("token");
+      setToken(storedToken);
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
+
+  // Componente para proteger rutas privadas
+  const PrivateRoute = ({ children }) => {
+    return token ? children : <Navigate to="/login" replace />;
+  };
 
   return (
     <Routes>
       {/* Ruta de Login */}
-      <Route 
-        path="/login" 
-        element={token ? <Navigate to="/dashboard" replace /> : <LoginPage />} 
+      <Route
+        path="/login"
+        element={
+          token ? <Navigate to="/dashboard" replace /> : <LoginPage />
+        }
       />
 
       {/* Ruta del Dashboard */}
-
-      {/*
-      <Route 
-        path="/dashboard" 
-        element={token ? <DashboardPage /> : <Navigate to="/login" replace />} Con validacion, temporalmente desactivada hasta que se termine el desarollo del dashboard
-      />
-      */}
-
-      <Route 
-        path="/dashboard" 
-        element={<DashboardPage />} 
+      <Route
+        path="/dashboard"
+        element={
+          <PrivateRoute>
+            <DashboardPage />
+          </PrivateRoute>
+        }
       />
 
+      {/* Ruta de Gestión de Piezas */}
+      <Route
+        path="/gestion-piezas"
+        element={
+          <PrivateRoute>
+            <PiezasPage />
+          </PrivateRoute>
+        }
+      />
 
-      {/* Redirección por defecto */}
-      <Route path="*" element={<Navigate to="/login" replace />} />
+      {/* Ruta para no encontradas */}
+      <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
   );
 };

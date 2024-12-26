@@ -1,0 +1,72 @@
+.dashboard-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f9f9f9;
+  }
+  
+  .dashboard-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 2rem;
+    width: 100%;
+    max-width: 1200px; /* Limitar el contenido central */
+    margin: 0 auto;
+  }
+  
+  .dashboard-header {
+    background-color: #ffffff;
+    border-bottom: 1px solid #ddd;
+    padding: 1rem 2rem;
+    width: 100%; /* Asegura que el header ocupe todo el ancho */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+/* Cambios en los estilos de PiezasPage */
+
+/* Configuración de la página de Piezas */
+/* Contenedor principal */
+.piezas-page {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Asegura que el contenido se alinee correctamente */
+    align-items: center; /* Centra horizontalmente */
+    width: 100%; /* Ocupa todo el ancho */
+    min-height: 100vh; /* Asegura que ocupe toda la altura de la pantalla */
+    padding: 0; /* Sin padding adicional */
+    background-color: #f8f9fa; /* Fondo similar al dashboard */
+}
+
+/* Contenedor del contenido */
+.piezas-content {
+    width: 100%; /* Ocupa todo el ancho disponible */
+    max-width: 1600px; /* Limita el ancho máximo */
+    margin: 0 auto; /* Centra el contenido horizontalmente */
+    padding: 1rem 0; /* Espaciado superior e inferior */
+    background-color: #fff; /* Fondo blanco */
+    border-radius: 10px; /* Bordes redondeados */
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); /* Sombra elegante */
+}
+
+/* Ajuste adicional para el contenedor de la tabla */
+.piezas-table-container {
+    margin: 1.5rem; /* Centrado automático */
+    padding: 1rem; /* Espaciado interno */
+    width: 100%; /* Tabla ocupa todo el ancho del contenedor */
+    max-width: 1600px; /* Ancho máximo de la tabla */
+    overflow: auto; /* Scroll en ambas direcciones */
+    background-color: #fff; /* Fondo blanco */
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Sombra elegante */
+    max-height: calc(100vh - 200px); /* Ajuste dinámico para evitar solapamiento */
+    position: relative; /* Encabezado sticky necesita este ajuste */
+}
+

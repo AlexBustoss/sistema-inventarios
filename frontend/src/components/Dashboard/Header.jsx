@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/header.css";
 
-const Header = () => {
+const Header = ({ title }) => { // Recibimos el prop "title"
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
 
-  // Simulación de obtener nombre del usuario (puedes sustituir por contexto o localStorage)
+  // Obtener el nombre del usuario desde localStorage
   const userName = localStorage.getItem("userName") || "Usuario";
-  const userInitial = userName.charAt(0).toUpperCase(); // Obtiene la inicial del usuario
+  const userInitial = userName.charAt(0).toUpperCase(); // Inicial del usuario
 
   const handleLogout = () => {
     // Elimina token y datos de usuario almacenados
@@ -25,9 +25,9 @@ const Header = () => {
           alt="Codetec Logo"
           className="header-logo"
         />
-        <h1 className="dashboard-title">Sistema de Gestión de Inventarios</h1>
+        <h1 className="dashboard-title">{title}</h1> {/* Título dinámico */}
         {/* Contenedor del avatar del usuario */}
-        <div 
+        <div
           className="user-avatar-container"
           onClick={() => setIsMenuOpen(!isMenuOpen)} // Cambia el estado del menú al hacer clic
         >
@@ -35,7 +35,7 @@ const Header = () => {
           {isMenuOpen && (
             <div className="user-menu">
               <p className="user-name">{userName}</p>
-              <button 
+              <button
                 className="logout-button"
                 onClick={handleLogout}
               >
