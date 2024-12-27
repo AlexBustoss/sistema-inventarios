@@ -1,0 +1,54 @@
+/* Contenedor de la notificación */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #fff;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    animation: fadeInOut 3s ease-in-out;
+    display: inline-block;
+    max-width: 300px;
+    text-align: center;
+  }
+  
+  /* Estilo para éxito */
+  .notification.success {
+    background-color: #28a745; /* Verde */
+  }
+  
+  /* Estilo para error */
+  .notification.error {
+    background-color: #dc3545; /* Rojo */
+  }
+  
+  /* Estilo para advertencia */
+  .notification.warning {
+    background-color: #ffc107; /* Amarillo */
+    color: #333;
+  }
+  
+  /* Animación de entrada y salida */
+  @keyframes fadeInOut {
+    0% {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    10% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    90% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+  }
+  

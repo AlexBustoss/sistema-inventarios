@@ -1,0 +1,97 @@
+/* Estilo del fondo de la ventana emergente */
+.confirm-dialog-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* Asegura que esté encima de otros elementos */
+}
+
+/* Contenedor principal de la ventana emergente */
+.confirm-dialog {
+    background-color: white; /* Fondo blanco */
+    padding: 1.5rem;
+    border-radius: 10px; /* Bordes redondeados */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Sombra para profundidad */
+    text-align: center;
+    max-width: 400px; /* Ancho máximo */
+    width: 90%; /* Se adapta a pantallas más pequeñas */
+    animation: fadeIn 0.3s ease-out; /* Animación de entrada */
+}
+
+/* Animación de entrada */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Texto del mensaje */
+.confirm-dialog p {
+    font-size: 1.2rem; /* Tamaño del texto */
+    margin-bottom: 1rem; /* Separación inferior */
+    color: #333; /* Color del texto */
+    line-height: 1.5; /* Altura de línea */
+}
+
+/* Contenedor de los botones */
+.confirm-dialog-buttons {
+    display: flex;
+    justify-content: space-around; /* Distribución uniforme */
+    gap: 1rem; /* Espaciado entre botones */
+    margin-top: 1rem;
+}
+
+/* Botón de confirmar */
+.confirm-button {
+    background-color: #dc3545; /* Rojo */
+    color: white; /* Texto blanco */
+    border: none;
+    border-radius: 5px; /* Bordes redondeados */
+    padding: 0.6rem 1rem; /* Espaciado interno */
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Transición suave */
+}
+
+.confirm-button:hover {
+    background-color: #bd2130; /* Rojo más oscuro */
+    transform: translateY(-2px); /* Efecto de elevación */
+}
+
+.confirm-button:active {
+    background-color: #a71d2a; /* Rojo aún más oscuro */
+    transform: translateY(0); /* Regresa a la posición original */
+}
+
+/* Botón de cancelar */
+.cancel-button {
+    background-color: #6c757d; /* Gris */
+    color: white; /* Texto blanco */
+    border: none;
+    border-radius: 5px; /* Bordes redondeados */
+    padding: 0.6rem 1rem; /* Espaciado interno */
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Transición suave */
+}
+
+.cancel-button:hover {
+    background-color: #5a6268; /* Gris más oscuro */
+    transform: translateY(-2px); /* Efecto de elevación */
+}
+
+.cancel-button:active {
+    background-color: #4e555b; /* Gris aún más oscuro */
+    transform: translateY(0); /* Regresa a la posición original */
+}

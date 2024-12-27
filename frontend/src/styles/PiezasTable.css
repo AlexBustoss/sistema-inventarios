@@ -77,9 +77,9 @@
 
 .piezas-table tr:hover {
     background-color: #e2e6ea; /* Fondo al pasar el mouse */
-    transform: scale(1.01); /* Sutil efecto de zoom */
     transition: all 0.2s ease-in-out; /* Animación suave */
 }
+
 
 /* Botones */
 .edit-button {
@@ -134,3 +134,89 @@
     margin: 0 auto; /* Centrado horizontal */
     padding: 1rem; /* Espaciado interno */
 }
+
+/* Estilo para los campos de entrada en modo edición */
+.piezas-table input[type="text"],
+.piezas-table input[type="number"] {
+    width: 100%; /* Ocupa todo el ancho de la celda */
+    padding: 0.5rem; /* Espaciado interno */
+    border: 1px solid #ced4da; /* Borde gris claro */
+    border-radius: 4px; /* Bordes redondeados */
+    font-size: 0.95rem; /* Tamaño del texto */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+    transition: border-color 0.2s ease, box-shadow 0.2s ease; /* Transición suave */
+}
+
+.piezas-table input[type="text"]:focus,
+.piezas-table input[type="number"]:focus {
+    border-color: #0056b3; /* Borde azul al enfocarse */
+    box-shadow: 0 0 5px rgba(0, 86, 179, 0.3); /* Sombra azul */
+    outline: none; /* Sin borde adicional */
+}
+
+/* Botones en modo edición */
+.piezas-table .save-button {
+    background-color: #28a745; /* Verde */
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 0.4rem 0.8rem;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+}
+
+.piezas-table .save-button:hover {
+    background-color: #218838; /* Verde más oscuro */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+}
+
+.piezas-table .cancel-button {
+    background-color: #dc3545; /* Rojo */
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 0.4rem 0.8rem;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+}
+
+.piezas-table .cancel-button:hover {
+    background-color: #bd2130; /* Rojo más oscuro */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+}
+
+.notification {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    background-color: #28a745;
+    color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    font-size: 1rem;
+    z-index: 1000;
+    animation: fadeInOut 3s ease-in-out;
+  }
+  
+  @keyframes fadeInOut {
+    0% {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    10% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    90% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+  }
+  

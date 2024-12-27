@@ -70,3 +70,34 @@
     position: relative; /* Encabezado sticky necesita este ajuste */
 }
 
+.dashboard-back-button {
+  position: absolute;
+  top: 20px; /* Posición vertical */
+  left: 20px; /* Posición horizontal */
+  background: linear-gradient(90deg, #4caf50, #2e7d32); /* Gradiente verde */
+  color: white; /* Texto blanco */
+  border: none; /* Sin bordes */
+  border-radius: 8px; /* Bordes redondeados */
+  padding: 0.8rem 1.5rem; /* Espaciado interno */
+  font-size: 1rem; /* Tamaño de texto */
+  font-weight: 600; /* Texto en negrita */
+  font-family: "Arial", sans-serif; /* Fuente limpia */
+  text-transform: uppercase; /* Letras mayúsculas */
+  letter-spacing: 1px; /* Espaciado entre letras */
+  cursor: pointer; /* Cambia el cursor al pasar */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Sombra elegante */
+  transition: all 0.3s ease; /* Transición suave para hover */
+  z-index: 1000; /* Asegura que esté en la parte superior */
+}
+
+.dashboard-back-button:hover {
+  background: linear-gradient(90deg, #2e7d32, #1b5e20); /* Gradiente más oscuro */
+  transform: translateY(-3px); /* Movimiento hacia arriba */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Sombra más intensa */
+}
+
+.dashboard-back-button:active {
+  transform: translateY(0); /* Sin movimiento al hacer clic */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra más sutil */
+}
+

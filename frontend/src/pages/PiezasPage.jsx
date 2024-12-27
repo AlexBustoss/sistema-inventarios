@@ -31,20 +31,37 @@ const PiezasPage = () => {
 
   return (
     <div>
+      {/* Botón para regresar al Dashboard */}
+      {/* Botón para regresar al Dashboard */}
+      <button
+        className="dashboard-back-button"
+        onClick={() => (window.location.href = "/dashboard")}
+      >
+        Regresar al Dashboard
+      </button>
       {/* Header */}
-      <Header title="Gestión de Piezas" /> {/* Corrección de sintaxis */}
+      <Header title="Gestión de Piezas" />
       <div className="piezas-page">
-          {/* Tabla de piezas */}
-          <PiezasTable piezas={piezas} /> {/* Pasamos las piezas como props */}
-          {/* Botones debajo de la tabla */}
-          <NavigationButtons
-            buttons={[
-              { id: 1, text: "Agregar Nueva Pieza", onClick: () => console.log("Agregar Nueva Pieza") },
-              { id: 2, text: "Importar Piezas", onClick: () => console.log("Importar Piezas") },
-            ]}
-          />
-        </div>
+        {/* Tabla de piezas */}
+        
+        <PiezasTable piezas={piezas} setPiezas={setPiezas} /> {/* Pasamos setPiezas como prop */}
+        {/* Botones debajo de la tabla */}
+        <NavigationButtons
+          buttons={[
+            {
+              id: 1,
+              text: "Agregar Nueva Pieza",
+              onClick: () => console.log("Agregar Nueva Pieza"),
+            },
+            {
+              id: 2,
+              text: "Importar Piezas",
+              onClick: () => console.log("Importar Piezas"),
+            },
+          ]}
+        />
       </div>
+    </div>
   );
 };
 
