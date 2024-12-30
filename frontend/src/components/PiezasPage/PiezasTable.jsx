@@ -18,13 +18,14 @@ const PiezasTable = ({ piezas, setPiezas }) => {
   // Ordenar las piezas alfabéticamente por Descripción al cargar el componente
   useEffect(() => {
     const sorted = [...piezas].sort((a, b) =>
-      a.Descripcion.localeCompare(b.Descripcion, "es", { sensitivity: "base" })
+      (a.Descripcion || "").localeCompare(b.Descripcion || "", "es", { sensitivity: "base" })
     );
     setSortedPiezas(sorted);
   }, [piezas]);
 
   // Función para capitalizar la primera letra de cada palabra
   const capitalizeFirstLetter = (text) => {
+    if (!text) return ""; // Manejo de texto undefined o null
     return text
       .toLowerCase()
       .replace(/\b\w/g, (char) => char.toUpperCase());
@@ -32,6 +33,7 @@ const PiezasTable = ({ piezas, setPiezas }) => {
 
   // Función para eliminar acentos
   const normalizeText = (text) => {
+    if (!text) return ""; // Manejo de texto undefined o null
     return text
       .toLowerCase()
       .normalize("NFD")
@@ -51,9 +53,9 @@ const PiezasTable = ({ piezas, setPiezas }) => {
   const filteredPiezas = sortedPiezas.filter((pieza) => {
     const keywordNormalized = normalizeText(filters.keyword);
     return (
-      normalizeText(pieza.Descripcion).includes(keywordNormalized) ||
-      normalizeText(pieza.Marca).includes(keywordNormalized) ||
-      normalizeText(pieza.Ubicacion).includes(keywordNormalized)
+      normalizeText(pieza.Descripcion || "").includes(keywordNormalized) ||
+      normalizeText(pieza.Marca || "").includes(keywordNormalized) ||
+      normalizeText(pieza.Ubicacion || "").includes(keywordNormalized)
     );
   });
 
@@ -153,8 +155,6 @@ const PiezasTable = ({ piezas, setPiezas }) => {
         </div>
       )}
 
-      
-
       {/* Buscador */}
       <div className="search-bar-container">
         <input
@@ -192,7 +192,7 @@ const PiezasTable = ({ piezas, setPiezas }) => {
                       <input
                         type="text"
                         name="Descripcion"
-                        value={capitalizeFirstLetter(editingData.Descripcion)}
+                        value={editingData.Descripcion || ""}
                         onChange={handleChange}
                       />
                     </td>
@@ -200,7 +200,7 @@ const PiezasTable = ({ piezas, setPiezas }) => {
                       <input
                         type="text"
                         name="Marca"
-                        value={capitalizeFirstLetter(editingData.Marca)}
+                        value={editingData.Marca || ""}
                         onChange={handleChange}
                       />
                     </td>
@@ -208,7 +208,7 @@ const PiezasTable = ({ piezas, setPiezas }) => {
                       <input
                         type="text"
                         name="Ubicacion"
-                        value={capitalizeFirstLetter(editingData.Ubicacion)}
+                        value={editingData.Ubicacion || ""}
                         onChange={handleChange}
                       />
                     </td>
@@ -216,7 +216,7 @@ const PiezasTable = ({ piezas, setPiezas }) => {
                       <input
                         type="number"
                         name="Stock_Actual"
-                        value={editingData.Stock_Actual}
+                        value={editingData.Stock_Actual || 0}
                         onChange={handleChange}
                       />
                     </td>
@@ -224,14 +224,14 @@ const PiezasTable = ({ piezas, setPiezas }) => {
                       <input
                         type="number"
                         name="Stock_Minimo"
-                        value={editingData.Stock_Minimo}
+                        value={editingData.Stock_Minimo || 0}
                         onChange={handleChange}
                       />
                     </td>
                     <td>
                       <select
                         name="estado"
-                        value={editingData.estado}
+                        value={editingData.estado || "Libre"}
                         onChange={handleChange}
                         className="select-input"
                       >
@@ -253,13 +253,13 @@ const PiezasTable = ({ piezas, setPiezas }) => {
                   </>
                 ) : (
                   <>
-                    <td>{pieza.ID_Pieza}</td>
-                    <td>{capitalizeFirstLetter(pieza.Descripcion)}</td>
-                    <td>{capitalizeFirstLetter(pieza.Marca)}</td>
-                    <td>{capitalizeFirstLetter(pieza.Ubicacion)}</td>
-                    <td>{pieza.Stock_Actual}</td>
-                    <td>{pieza.Stock_Minimo}</td>
-                    <td>{capitalizeFirstLetter(pieza.estado)}</td>
+                    <td>{pieza.ID_Pieza || "N/A"}</td>
+                    <td>{capitalizeFirstLetter(pieza.Descripcion || "N/A")}</td>
+                    <td>{capitalizeFirstLetter(pieza.Marca || "N/A")}</td>
+                    <td>{capitalizeFirstLetter(pieza.Ubicacion || "N/A")}</td>
+                    <td>{pieza.Stock_Actual || 0}</td>
+                    <td>{pieza.Stock_Minimo || 0}</td>
+                    <td>{capitalizeFirstLetter(pieza.estado || "N/A")}</td>
                     <td>
                       <button
                         className="edit-button"

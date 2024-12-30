@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-// Middleware para validar el token JWT
+/* Middleware para validar el token JWT
 const validarToken = (req, res, next) => {
     const token = req.headers['authorization'];
 
@@ -18,6 +18,16 @@ const validarToken = (req, res, next) => {
     }
 };
 
+const validarToken = (req, res, next) => {
+    // Log temporal para asegurarte de que se está ejecutando
+    console.log("Autenticación deshabilitada temporalmente.");
+    
+    // Omitimos la validación del token y seguimos al siguiente middleware
+    req.usuario = { Rol: 'admin' }; // Opcional: Asignar un rol por defecto si es necesario
+    next();
+};
+
+
 // Middleware para verificar roles
 const verificarRol = (rolesPermitidos) => {
     return (req, res, next) => {
@@ -31,3 +41,25 @@ const verificarRol = (rolesPermitidos) => {
 };
 
 module.exports = { validarToken, verificarRol };
+*/
+
+exports.verifyToken = (req, res, next) => {
+    // Comentar toda la lógica de validación
+    // const token = req.headers["authorization"];
+    // if (!token) {
+    //   return res.status(403).send({ message: "No token provided!" });
+    // }
+  
+    // try {
+    //   const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    //   req.userId = decoded.id;
+    //   next();
+    // } catch (error) {
+    //   return res.status(401).send({ message: "Unauthorized!" });
+    // }
+  
+    // Permitir acceso sin autenticación
+    req.userId = 1; // ID de usuario temporal para simular autenticación
+    next();
+  };
+  

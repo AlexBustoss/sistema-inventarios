@@ -31,6 +31,39 @@ router.get('/bajo-stock', async (req, res) => {
     }
 });
 
+// Buscar piezas similares (NUEVA RUTA)
+router.get('/similares', async (req, res) => {
+    const { noParte, descripcion, marca } = req.query;
+  
+    try {
+        const query = `
+        SELECT * 
+        FROM piezas
+        WHERE 
+          ($1::TEXT IS NULL OR "ID_Pieza"::TEXT = $1) AND -- Coincidencia exacta para noParte
+          ($2::TEXT IS NULL OR "Descripcion" ILIKE $2) AND
+          ($3::TEXT IS NULL OR "Marca" ILIKE $3)
+      `;
+      
+      const values = [
+        noParte ? noParte : null, // Coincidencia exacta para noParte
+        descripcion ? `%${descripcion}%` : null,
+        marca ? `%${marca}%` : null,
+      ];
+  
+      console.log("Valores enviados a la consulta:", values);
+      const result = await pool.query(query, values);
+      res.status(200).json(result.rows);
+    } catch (error) {
+      console.error('Error en la consulta de piezas similares:', error);
+      res.status(500).json({ error: 'Error al buscar piezas similares' });
+    }
+  });
+
+  
+  
+
+
 // Obtener una pieza por ID
 router.get('/:id', async (req, res) => {
     const { id } = req.params;
@@ -120,5 +153,55 @@ router.delete('/:id', async (req, res) => {
         res.status(500).json({ error: 'Error al eliminar pieza' });
     }
 });
+
+// Asociar piezas a una compra
+router.post('/asociar-compra/:n_venta', async (req, res) => {
+    const { n_venta } = req.params;
+    const { piezas } = req.body;
+
+    if (!Array.isArray(piezas) || piezas.length === 0) {
+        return res.status(400).json({ error: 'Debe proporcionar un array de piezas.' });
+    }
+
+    const client = await pool.connect(); // Para manejar la transacción
+    try {
+        await client.query('BEGIN'); // Inicia la transacción
+
+        for (const pieza of piezas) {
+            const { noParte, cantidad } = pieza;
+
+            if (!noParte || !cantidad) {
+                throw new Error('Cada pieza debe tener "noParte" y "cantidad".');
+            }
+
+            // Actualizar el stock y asociar la pieza al número de venta
+            const query = `
+                UPDATE piezas
+                SET "Stock_Actual" = "Stock_Actual" + $1,
+                    "ID_Orden" = $2
+                WHERE "ID_Pieza" = $3
+                RETURNING *;
+            `;
+
+            const values = [cantidad, n_venta, noParte];
+
+            const result = await client.query(query, values);
+
+            if (result.rowCount === 0) {
+                throw new Error(`La pieza con ID_Pieza ${noParte} no existe.`);
+            }
+        }
+
+        await client.query('COMMIT'); // Confirma la transacción
+        res.status(200).json({ mensaje: 'Piezas asociadas exitosamente a la compra.' });
+    } catch (error) {
+        await client.query('ROLLBACK'); // Revierte la transacción en caso de error
+        console.error('Error al asociar piezas a la compra:', error);
+        res.status(500).json({ error: 'Error al asociar piezas a la compra.' });
+    } finally {
+        client.release(); // Libera el cliente
+    }
+});
+
 
 module.exports = router;

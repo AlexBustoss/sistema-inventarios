@@ -1,0 +1,189 @@
+/* Contenedor principal */
+.importar-piezas-container {
+  max-width: 1200px;
+  width: 100%;
+  padding: 2rem;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem; /* Espaciado entre elementos */
+}
+
+/* Estilo del encabezado */
+header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+/* Formulario de Número de Venta */
+.formulario-venta {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.formulario-venta label {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.formulario-venta input {
+  padding: 0.75rem;
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  font-size: 1rem;
+  width: 100%;
+  transition: border-color 0.3s ease;
+}
+
+.formulario-venta input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* Formulario de Piezas */
+.formulario-pieza {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  width: 100%;
+}
+
+.formulario-pieza input {
+  padding: 0.75rem;
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.formulario-pieza input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.agregar-boton {
+  grid-column: span 2; /* Ocupa dos columnas en pantallas grandes */
+  background-color: #28a745;
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding: 0.8rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.agregar-boton:hover {
+  background-color: #218838;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(33, 136, 56, 0.5);
+}
+
+/* Tabla de piezas */
+.piezas-agregadas-section {
+  width: 100%;
+  margin-top: 2rem;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  font-size: 1rem;
+}
+
+table th,
+table td {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+table th {
+  background-color: #007bff;
+  color: white;
+  text-transform: uppercase;
+}
+
+table tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+table tr:hover {
+  background-color: #e9ecef;
+}
+
+/* Botón para regresar al Dashboard */
+.dashboard-back-button {
+  background-color: #007bff;
+  color: white;
+  font-size: 1rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.dashboard-back-button:hover {
+  background-color: #0056b3;
+  box-shadow: 0 6px 16px rgba(0, 86, 179, 0.4);
+}
+
+.dashboard-back-button:active {
+  transform: translateY(1px);
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .formulario-pieza {
+    grid-template-columns: 1fr;
+  }
+
+  .agregar-boton {
+    grid-column: span 1; /* Ocupa una columna en pantallas pequeñas */
+  }
+
+  table th,
+  table td {
+    font-size: 0.9rem;
+  }
+}
+
+.confirmar-compra-boton {
+  background-color: #4caf50; /* Verde para resaltar acción positiva */
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.confirmar-compra-boton:hover {
+  background-color: #45a049; /* Un verde más oscuro al pasar el mouse */
+}
+
+.confirmar-compra-boton:active {
+  background-color: #388e3c; /* Verde más oscuro al hacer clic */
+  transform: scale(0.98); /* Efecto de clic */
+}
+
+.confirmar-compra-boton:disabled {
+  background-color: #9e9e9e; /* Gris para el estado deshabilitado */
+  cursor: not-allowed;
+  opacity: 0.7;
+}

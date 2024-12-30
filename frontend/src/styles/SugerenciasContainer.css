@@ -1,0 +1,120 @@
+/* Contenedor principal */
+.sugerencias-container {
+    margin-top: 20px;
+    flex: 0.5;
+    background-color: #ffffff;
+    padding: 0; /* Sin padding general */
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    max-height: 400px;
+    overflow-y: auto;
+    position: relative;
+  }
+  
+  /* Sticky Header */
+  .sugerencias-container h3 {
+    background-color: #007bff; /* Fondo del encabezado */
+    color: #ffffff; /* Texto blanco */
+    position: sticky;
+    top: 0; /* Siempre visible en la parte superior */
+    z-index: 10; /* Prioridad sobre otros elementos */
+    margin: 0;
+    padding: 15px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: center;
+    border-bottom: 2px solid #0056b3;
+    text-transform: uppercase;
+    letter-spacing: 0.05rem;
+  }
+  
+  /* Lista de sugerencias */
+  .sugerencias-container ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  /* Cada sugerencia como tarjeta */
+  .sugerencias-container li {
+    background: #f9f9f9;
+    margin: 0; /* Sin margen entre elementos */
+    padding: 15px;
+    border-bottom: 1px solid #e0e0e0;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 15px;
+    align-items: center;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .sugerencias-container li:hover {
+    background-color: #f1f1f1;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Texto en las tarjetas */
+  .sugerencias-container span {
+    font-size: 1rem;
+    color: #333;
+    font-weight: 500;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  
+  /* Botón para actualizar stock */
+  .sugerencias-container button {
+    background-color: #28a745;
+    color: white;
+    font-size: 0.9rem;
+    font-weight: bold;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .sugerencias-container button:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(33, 136, 56, 0.4);
+  }
+  
+  /* Scroll personalizado */
+  .sugerencias-container::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  .sugerencias-container::-webkit-scrollbar-thumb {
+    background-color: #007bff;
+    border-radius: 5px;
+  }
+  
+  .sugerencias-container::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
+  }
+  
+  /* Responsivo */
+  @media (max-width: 768px) {
+    .sugerencias-container {
+      max-height: 300px;
+    }
+  
+    .sugerencias-container h3 {
+      font-size: 1rem;
+    }
+  
+    .sugerencias-container span {
+      font-size: 0.9rem;
+    }
+  
+    .sugerencias-container button {
+      font-size: 0.8rem;
+      padding: 6px 10px;
+    }
+  }
+  

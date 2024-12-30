@@ -1,13 +1,37 @@
 require('dotenv').config(); // Cargar variables de entorno desde el archivo .env
 console.log('Clave secreta JWT_SECRET:', process.env.JWT_SECRET);
+
 const express = require('express');
 const { initPool, closePool } = require('./config/db'); // Importar funciones de conexión a la base de datos
+const cors = require('cors'); // Importar el middleware CORS
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocs = require('./swaggerConfig');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Inicializar el pool de conexiones a la base de datos
-initPool(); // Importante: inicializa el pool antes de usarlo
+initPool();
+
+// Middleware para procesar JSON
+app.use(express.json());
+
+// Habilitar CORS para permitir solicitudes desde el frontend
+app.use(
+    cors({
+        origin: ["http://localhost:5173", "http://localhost:5174"], // Incluye ambos puertos
+        methods: ["GET", "POST", "PUT", "DELETE"], // Métodos permitidos
+        allowedHeaders: ["Content-Type", "Authorization"], // Encabezados permitidos
+    })
+);
+
+// Habilitar Swagger en modo desarrollo
+if (process.env.NODE_ENV === 'development') {
+    console.log('Swagger habilitado en modo desarrollo');
+    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+} else {
+    console.log('Swagger deshabilitado en producción');
+}
 
 // Importar rutas
 const usuariosRoutes = require('./routes/usuarios.routes.js');
@@ -22,34 +46,9 @@ const piezasProveedoresRoutes = require('./routes/piezasProveedores.routes.js');
 const proveedoresRoutes = require('./routes/proveedores.routes.js');
 const ubicacionesProveedoresRoutes = require('./routes/ubicacionesProveedores.routes.js');
 const unidadesMedidaRoutes = require('./routes/unidadesMedida.routes.js');
-const authRoutes = require('../src/routes/auth.routes.js');
-const cors = require('cors'); // Importar el middleware CORS
+const authRoutes = require('./routes/auth.routes.js');
+const comprasRoutes = require('./routes/compras.routes');
 
-
-// Importar middleware para manejo de errores
-const manejarErrores = require('./middlewares/validarErrores.js');
-
-// Importar Swagger para la documentación
-const swaggerUi = require('swagger-ui-express');
-const swaggerDocs = require('./swaggerConfig');
-
-// Habilitar o deshabilitar Swagger basado en el entorno
-if (process.env.NODE_ENV === 'development') {
-    console.log('Swagger habilitado en modo desarrollo');
-    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-} else {
-    console.log('Swagger deshabilitado en producción');
-}
-
-// Middleware para procesar JSON
-app.use(express.json());
-
-// Habilitar CORS para permitir solicitudes desde el frontend
-app.use(cors({
-    origin: "http://localhost:5173", // URL del frontend
-    methods: ["GET", "POST", "PUT", "DELETE"], // Métodos permitidos
-    allowedHeaders: ["Content-Type", "Authorization"] // Encabezados permitidos
-}));
 
 // Registrar las rutas
 app.use('/api', usuariosRoutes);
@@ -65,15 +64,19 @@ app.use('/api/proveedores', proveedoresRoutes);
 app.use('/api/ubicaciones_proveedores', ubicacionesProveedoresRoutes);
 app.use('/api/unidades_medida', unidadesMedidaRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/compras', comprasRoutes);
+
 
 // Ruta básica de prueba
 app.get('/', (req, res) => {
-    res.send('Servidor funcionando correctamente');
+    res.redirect('http://localhost:5174'); // Redirigir al frontend automáticamente
 });
 
 // Middleware para manejar errores globalmente
-app.use(manejarErrores);
-
+app.use((err, req, res, next) => {
+    console.error('Error global:', err.message);
+    res.status(err.status || 500).json({ error: err.message || 'Error interno del servidor' });
+});
 
 // Iniciar el servidor solo si no está en modo de prueba
 if (process.env.NODE_ENV !== 'test') {

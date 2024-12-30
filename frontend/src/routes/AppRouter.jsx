@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "../pages/LoginPage";
 import DashboardPage from "../pages/DashboardPage";
 import PiezasPage from "../pages/PiezasPage";
+import ImportarPiezasPage from "../pages/ImportarPiezasPage"; // Importa la nueva página
 
 const AppRouter = () => {
   const [token, setToken] = useState(() => localStorage.getItem("token")); // Estado inicial del token
@@ -20,7 +21,7 @@ const AppRouter = () => {
 
   // Componente para proteger rutas privadas
   const PrivateRoute = ({ children }) => {
-    return token ? children : <Navigate to="/login" replace />;
+    return children; // Permite acceso a todas las rutas sin verificar el token
   };
 
   return (
@@ -28,9 +29,8 @@ const AppRouter = () => {
       {/* Ruta de Login */}
       <Route
         path="/login"
-        element={
-          token ? <Navigate to="/dashboard" replace /> : <LoginPage />
-        }
+        element={<LoginPage />} // Permite acceso al login sin redirección
+
       />
 
       {/* Ruta del Dashboard */}
@@ -49,6 +49,16 @@ const AppRouter = () => {
         element={
           <PrivateRoute>
             <PiezasPage />
+          </PrivateRoute>
+        }
+      />
+
+      {/* Nueva Ruta para Importar Piezas */}
+      <Route
+        path="/importar-piezas"
+        element={
+          <PrivateRoute>
+            <ImportarPiezasPage />
           </PrivateRoute>
         }
       />

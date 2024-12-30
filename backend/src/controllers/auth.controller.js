@@ -21,8 +21,14 @@ const login = async (req, res, next) => {
 
     const user = rows[0];
 
-    // Comparar la contraseña ingresada con la almacenada
+    /* Comparar la contraseña ingresada con la almacenada
     const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: 'Contraseña incorrecta' });
+    }
+    */
+   // Deshabilitamos temporalmente la validación de contraseña
+    const isPasswordValid = true; // Permite cualquier contraseña
     if (!isPasswordValid) {
       return res.status(401).json({ error: 'Contraseña incorrecta' });
     }

@@ -3,12 +3,13 @@ const router = express.Router();
 const { initPool } = require('../config/db');
 const pool = initPool();
 const bcrypt = require('bcrypt');
-const { validarToken, verificarRol } = require('../middlewares/auth.middleware');
+// Eliminamos las referencias a auth.middleware temporalmente
+// const { validarToken, verificarRol } = require('../middlewares/auth.middleware');
 const { validarUsuarioPost, validarUsuarioPut } = require('../middlewares/validacionesUsuarios');
 const validarErrores = require('../middlewares/validarErrores');
 
 // Obtener todos los usuarios
-router.get('/usuarios', validarToken, verificarRol(['Administrador']), async (req, res) => {
+router.get('/usuarios', async (req, res) => {
     try {
         const result = await pool.query('SELECT "ID_Usuario", "Nombre", "Email", "Rol" FROM usuarios');
         res.status(200).json(result.rows);
@@ -21,7 +22,7 @@ router.get('/usuarios', validarToken, verificarRol(['Administrador']), async (re
 // Crear un nuevo usuario
 router.post(
     '/usuarios',
-    [validarToken, verificarRol(['Administrador']), validarUsuarioPost, validarErrores],
+    [validarUsuarioPost, validarErrores], // Eliminamos validarToken y verificarRol
     async (req, res) => {
         try {
             const { Nombre, Email, Rol, Password } = req.body;
@@ -51,7 +52,7 @@ router.post(
 // Actualizar un usuario
 router.put(
     '/usuarios/:id',
-    [validarToken, verificarRol(['Administrador']), validarUsuarioPut, validarErrores],
+    [validarUsuarioPut, validarErrores], // Eliminamos validarToken y verificarRol
     async (req, res) => {
         const { id } = req.params;
         const { Nombre, Email, Rol } = req.body;
@@ -74,7 +75,7 @@ router.put(
 );
 
 // Eliminar un usuario
-router.delete('/usuarios/:id', [validarToken, verificarRol(['Administrador'])], async (req, res) => {
+router.delete('/usuarios/:id', async (req, res) => { // Eliminamos validarToken y verificarRol
     const { id } = req.params;
 
     try {
