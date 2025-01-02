@@ -96,3 +96,34 @@ export const registrarCompra = async (compraData) => {
     throw error;
   }
 };
+
+// Asignar stock a un proyecto
+export const asignarStockAProyecto = async (idPieza, idProyecto, cantidad) => {
+  try {
+    const response = await axios.post(`${API_URL}/asignar-stock`, {
+      id_pieza: Number(idPieza), // Convierte a número
+      id_proyecto: Number(idProyecto), // Convierte a número
+      cantidad: Number(cantidad), // Convierte a número
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error al asignar stock al proyecto:", error);
+    throw error;
+  }
+};
+
+
+// Liberar stock de un proyecto
+export const liberarStockDeProyecto = async (idPieza, idProyecto, cantidad) => {
+  try {
+    const response = await axios.post(`${API_URL}/liberar-stock`, {
+      idPieza,
+      idProyecto,
+      cantidad,
+    });
+    return response.data; // Retorna mensaje de éxito
+  } catch (error) {
+    console.error("Error al liberar stock del proyecto:", error);
+    throw error;
+  }
+};

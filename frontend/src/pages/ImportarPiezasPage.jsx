@@ -6,6 +6,8 @@ import {
   buscarPiezasSimilares,
   registrarCompra,
   asociarPiezasCompra,
+  asignarStockAProyecto,
+  liberarStockDeProyecto,
 } from "../services/piezasService"; // Importa las nuevas funciones
 import "../styles/SugerenciasContainer.css";
 import debounce from "lodash.debounce";
@@ -96,34 +98,39 @@ const ImportarPiezasPage = () => {
       alert("Por favor, completa todos los campos de la compra y agrega al menos una pieza.");
       return;
     }
-
+  
     try {
-      const compraData = {
-        Proveedor: proveedor,
-        Notas: notas,
-      };
-
-      // Registrar la compra
-      const compra = await registrarCompra(compraData);
-
-      // Asociar las piezas a la compra registrada
-      const piezas = piezasAgregadas.map((pieza) => ({
-        noParte: pieza.noParte,
-        cantidad: pieza.cantidad,
-      }));
-
-      await asociarPiezasCompra(compra.n_venta, piezas);
-
-      alert("Compra y piezas registradas con éxito.");
+      for (const pieza of piezasAgregadas) {
+        if (!pieza.noParte || !pieza.cantidad) {
+          throw new Error("Cada pieza debe tener un número de parte y cantidad válida.");
+        }
+  
+        if (pieza.noProyecto) {
+          // Asignar stock al proyecto
+          await asignarStockAProyecto(pieza.noParte, pieza.noProyecto, pieza.cantidad);
+        } else {
+          // Agregar al stock general
+          const piezaSinProyecto = {
+            noParte: pieza.noParte,
+            cantidad: pieza.cantidad,
+            proveedor: proveedor,
+          };
+  
+          await addNewPieza(piezaSinProyecto);
+        }
+      }
+  
+      alert("Compra confirmada y stock actualizado exitosamente.");
       setNumeroVenta("");
       setProveedor("");
       setNotas("");
       setPiezasAgregadas([]);
     } catch (error) {
-      console.error("Error al registrar la compra:", error);
-      alert("Ocurrió un error al registrar la compra.");
+      console.error("Error al confirmar la compra:", error);
+      alert("Ocurrió un error al procesar la compra.");
     }
   };
+  
 
   // Nueva función: Manejar "Actualizar Stock"
   const handleActualizarStock = (pieza) => {
@@ -133,6 +140,39 @@ const ImportarPiezasPage = () => {
       marca: pieza.Marca,
     }));
   };
+
+  // Asignar stock a un proyecto
+  const handleAsignarStock = async (pieza) => {
+    if (!pieza.noProyecto || !pieza.cantidad) {
+      alert("Por favor, ingresa un proyecto y una cantidad válida.");
+      return;
+    }
+
+    try {
+      await asignarStockAProyecto(pieza.noParte, pieza.noProyecto, pieza.cantidad);
+      alert("Stock asignado exitosamente.");
+    } catch (error) {
+      console.error("Error al asignar stock:", error);
+      alert("No se pudo asignar el stock.");
+    }
+  };
+
+  // Liberar stock de un proyecto
+  const handleLiberarStock = async (pieza) => {
+    if (!pieza.noProyecto || !pieza.cantidad) {
+      alert("Por favor, ingresa un proyecto y una cantidad válida.");
+      return;
+    }
+
+    try {
+      await liberarStockDeProyecto(pieza.noParte, pieza.noProyecto, pieza.cantidad);
+      alert("Stock liberado exitosamente.");
+    } catch (error) {
+      console.error("Error al liberar stock:", error);
+      alert("No se pudo liberar el stock.");
+    }
+  };
+
 
   return (
     <div className="importar-piezas-page">
@@ -246,7 +286,12 @@ const ImportarPiezasPage = () => {
 
       <div className="piezas-agregadas-section">
         <h3>Piezas Agregadas</h3>
-        <PiezasAgregadasTable piezas={piezasAgregadas} setPiezas={setPiezasAgregadas} />
+        <PiezasAgregadasTable
+          piezas={piezasAgregadas}
+          setPiezas={setPiezasAgregadas}
+          onAsignarStock={handleAsignarStock}
+          onLiberarStock={handleLiberarStock}
+        />
         <button onClick={handleRegistrarCompra} className="confirmar-compra-boton">
           Confirmar Compra
         </button>

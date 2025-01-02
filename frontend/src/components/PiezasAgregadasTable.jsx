@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "../styles/PiezasAgregadasTable.css";
 
-const PiezasAgregadasTable = ({ piezas, setPiezas }) => {
+const PiezasAgregadasTable = ({ piezas, setPiezas}) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editingIndex, setEditingIndex] = useState(null);
   const [editingData, setEditingData] = useState(null);
@@ -42,48 +42,47 @@ const PiezasAgregadasTable = ({ piezas, setPiezas }) => {
     <div className="piezas-agregadas-table-container">
       <table className="piezas-agregadas-table">
         <thead>
-            <tr>
+          <tr>
             <th>No. Parte</th>
             <th>Cantidad</th>
             <th>Descripción</th>
             <th>Marca</th>
             <th>Fecha Registro</th>
             <th>No. Proyecto</th>
-            <th>Proveedor</th> {/* Nueva columna */}
+            <th>Proveedor</th>
             <th>Acciones</th>
-            </tr>
+          </tr>
         </thead>
         <tbody>
-            {piezas.length > 0 ? (
+          {piezas.length > 0 ? (
             piezas.map((pieza, index) => (
-                <tr key={index}>
+              <tr key={index}>
                 <td>{pieza.noParte}</td>
                 <td>{pieza.cantidad}</td>
                 <td>{pieza.descripcion}</td>
                 <td>{pieza.marca}</td>
                 <td>{pieza.fechaRegistro}</td>
                 <td>{pieza.noProyecto || "N/A"}</td>
-                <td>{pieza.proveedor || "N/A"}</td> 
+                <td>{pieza.proveedor || "N/A"}</td>
                 <td>
-                    <button
+                  <button
                     className="delete-button"
                     onClick={() => handleDelete(index)}
-                    >
+                  >
                     Eliminar
-                    </button>
+                  </button>
                 </td>
-                </tr>
+              </tr>
             ))
-            ) : (
+          ) : (
             <tr>
-                <td colSpan="7" className="no-data">
+              <td colSpan="8" className="no-data">
                 No hay datos disponibles
-                </td>
+              </td>
             </tr>
-            )}
+          )}
         </tbody>
-        </table>
-
+      </table>
     </div>
   );
 };

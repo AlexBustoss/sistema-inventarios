@@ -203,5 +203,47 @@ router.post('/asociar-compra/:n_venta', async (req, res) => {
     }
 });
 
+// Asignar stock a un proyecto
+router.post('/asignar-stock', async (req, res) => {
+    const { id_pieza, id_proyecto, cantidad } = req.body;
+
+    console.log("Datos recibidos:", { id_pieza, id_proyecto, cantidad });
+
+    if (!id_pieza || !id_proyecto || !cantidad) {
+        return res.status(400).json({ error: 'Campos obligatorios: id_pieza, id_proyecto, cantidad.' });
+    }
+
+    try {
+        const query = 'SELECT asignar_stock_a_proyecto($1, $2, $3)';
+        const values = [id_pieza, id_proyecto, cantidad];
+        await pool.query(query, values);
+
+        res.status(200).json({ message: 'Stock asignado exitosamente al proyecto.' });
+    } catch (error) {
+        console.error('Error al asignar stock:', error);
+        res.status(500).json({ error: 'Error al asignar stock al proyecto.' });
+    }
+});
+
+// Liberar stock de un proyecto
+router.post('/liberar-stock', async (req, res) => {
+    const { id_pieza, id_proyecto, cantidad } = req.body;
+
+    if (!id_pieza || !id_proyecto || !cantidad) {
+        return res.status(400).json({ error: 'Campos obligatorios: id_pieza, id_proyecto, cantidad.' });
+    }
+
+    try {
+        const query = 'SELECT liberar_stock_de_proyecto($1, $2, $3)';
+        const values = [id_pieza, id_proyecto, cantidad];
+        await pool.query(query, values);
+
+        res.status(200).json({ message: 'Stock liberado exitosamente del proyecto.' });
+    } catch (error) {
+        console.error('Error al liberar stock:', error);
+        res.status(500).json({ error: 'Error al liberar stock del proyecto.' });
+    }
+});
+
 
 module.exports = router;
