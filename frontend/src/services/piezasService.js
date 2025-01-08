@@ -2,6 +2,23 @@ import axios from "axios";
 
 const API_URL = "http://localhost:3000/api/piezas"; // Reemplaza con tu URL del backend si es diferente
 const COMPRAS_API_URL = "http://localhost:3000/api/compras"; // API para compras
+const MARCAS_API_URL = "http://localhost:3000/api/marcas_piezas";
+const UBICACIONES_API_URL = "http://localhost:3000/api/ubicaciones_proveedores";
+axios.defaults.baseURL = "http://localhost:3000"; // Configura el backend
+
+
+export const getMarcas = async () => {
+  try {
+    const response = await axios.get('/api/marcas_piezas');
+    return response.data; // Devolver directamente los datos
+  } catch (error) {
+    console.error("Error al obtener marcas desde el backend:", error);
+    return []; // Devuelve un array vacío en caso de error
+  }
+};
+
+
+
 
 // Obtener todas las piezas
 export const getAllPiezas = async () => {
@@ -28,13 +45,32 @@ export const getLowStockPiezas = async () => {
 // Agregar nueva pieza
 export const addNewPieza = async (pieza) => {
   try {
-    const response = await axios.post(API_URL, pieza);
+    // Validar o agregar marca
+    const idMarca = await validarOAgregarMarca(pieza.marca);
+
+    // Validar o agregar ubicación
+    const idUbicacion = await validarOAgregarUbicacion(pieza.ubicacion);
+
+    // Agregar la nueva pieza
+    const response = await axios.post(API_URL, {
+      noParte: pieza.noParte,
+      descripcion: pieza.descripcion,
+      cantidad: pieza.cantidad,
+      proveedor: pieza.proveedor,
+      ubicacion: idUbicacion, // Usar el ID de la ubicación
+      stockMinimo: pieza.stockMinimo,
+      marca: idMarca, // Usar el ID de la marca
+      estado: pieza.estado || "libre", // Valor predeterminado
+    });
+
     return response.data; // Retorna la pieza creada
   } catch (error) {
     console.error("Error al agregar una nueva pieza:", error);
     throw error;
   }
 };
+
+
 
 // Actualizar una pieza existente
 export const updatePieza = async (id, pieza) => {
@@ -127,3 +163,35 @@ export const liberarStockDeProyecto = async (idPieza, idProyecto, cantidad) => {
     throw error;
   }
 };
+
+export const registrarPaquete = async (paquete) => {
+  try {
+      const response = await axios.post(`${API_URL}/registrar-paquete`, paquete);
+      return response.data;
+  } catch (error) {
+      console.error("Error al registrar el paquete:", error);
+      throw error;
+  }
+};
+
+const validarOAgregarMarca = async (marca) => {
+  try {
+    const response = await axios.post(`${MARCAS_API_URL}/validar-o-crear`, { nombre: marca });
+    return response.data.id_marca; // Retorna el ID de la marca
+  } catch (error) {
+    console.error("Error al validar o agregar la marca:", error);
+    throw error;
+  }
+};
+
+const validarOAgregarUbicacion = async (ubicacion) => {
+  try {
+    const response = await axios.post(`${UBICACIONES_API_URL}/validar-o-crear`, { nombre: ubicacion });
+    return response.data.id_ubicacion; // Retorna el ID de la ubicación
+  } catch (error) {
+    console.error("Error al validar o agregar la ubicación:", error);
+    throw error;
+  }
+};
+
+

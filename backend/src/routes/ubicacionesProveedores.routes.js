@@ -1,39 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('../config/db'); // Conexión a la base de datos
-
-/**
- * CRUD para la entidad Ubicaciones Proveedores
- */
-
-/**
- * @swagger
- * /api/ubicaciones_proveedores:
- *   get:
- *     summary: Obtiene todas las ubicaciones de proveedores
- *     tags:
- *       - Ubicaciones Proveedores
- *     responses:
- *       200:
- *         description: Lista de ubicaciones de proveedores
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   ID_Ubicacion:
- *                     type: integer
- *                   ID_Proveedor:
- *                     type: integer
- *                   Direccion:
- *                     type: string
- *                   Telefono:
- *                     type: string
- *                   Email:
- *                     type: string
- */
+const { getPool } = require('../config/db');
+const pool = getPool();
 
 // Obtener todas las ubicaciones de proveedores
 router.get('/', async (req, res) => {
@@ -45,46 +13,6 @@ router.get('/', async (req, res) => {
         res.status(500).json({ error: 'Error al obtener ubicaciones de proveedores' });
     }
 });
-
-/**
- * @swagger
- * /api/ubicaciones_proveedores/{id}:
- *   get:
- *     summary: Obtiene una ubicación de proveedor por ID
- *     tags:
- *       - Ubicaciones Proveedores
- *     parameters:
- *       - name: id
- *         in: path
- *         required: true
- *         description: ID de la ubicación
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Detalles de la ubicación
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 ID_Ubicacion:
- *                   type: integer
- *                 ID_Proveedor:
- *                   type: integer
- *                 Direccion:
- *                   type: string
- *                 Telefono:
- *                   type: string
- *                 Email:
- *                   type: string
- *       404:
- *         description: Ubicación no encontrada
- *         content:
- *           application/json:
- *             example:
- *               error: Ubicación no encontrada
- */
 
 // Obtener una ubicación de proveedor por ID
 router.get('/:id', async (req, res) => {
@@ -101,70 +29,6 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-
-/**
- * @swagger
- * /api/ubicaciones_proveedores:
- *   post:
- *     summary: Crea una nueva ubicación de proveedor
- *     tags:
- *       - Ubicaciones Proveedores
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               ID_Proveedor:
- *                 type: integer
- *               Direccion:
- *                 type: string
- *               Telefono:
- *                 type: string
- *               Email:
- *                 type: string
- *             required:
- *               - ID_Proveedor
- *               - Direccion
- *               - Telefono
- *               - Email
- *           example:
- *             ID_Proveedor: 3
- *             Direccion: "Calle 123, Colonia Centro, Ciudad C"
- *             Telefono: "555-0000"
- *             Email: "contacto@proveedorc.com"
- *     responses:
- *       201:
- *         description: Ubicación creada exitosamente
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 ID_Ubicacion:
- *                   type: integer
- *                 ID_Proveedor:
- *                   type: integer
- *                 Direccion:
- *                   type: string
- *                 Telefono:
- *                   type: string
- *                 Email:
- *                   type: string
- *       400:
- *         description: Error en la solicitud
- *         content:
- *           application/json:
- *             example:
- *               error: "Campos obligatorios: ID_Proveedor, Direccion, Telefono, Email"
- *       500:
- *         description: Error interno del servidor
- *         content:
- *           application/json:
- *             example:
- *               error: Error al crear ubicación de proveedor
- */
 
 // Crear una nueva ubicación de proveedor
 router.post('/', async (req, res) => {
@@ -190,70 +54,6 @@ router.post('/', async (req, res) => {
     }
 });
 
-/**
- * @swagger
- * /api/ubicaciones_proveedores/{id}:
- *   put:
- *     summary: Actualiza una ubicación de proveedor existente
- *     tags:
- *       - Ubicaciones Proveedores
- *     parameters:
- *       - name: id
- *         in: path
- *         required: true
- *         description: ID de la ubicación a actualizar
- *         schema:
- *           type: integer
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               ID_Proveedor:
- *                 type: integer
- *               Direccion:
- *                 type: string
- *               Telefono:
- *                 type: string
- *               Email:
- *                 type: string
- *             required:
- *               - ID_Proveedor
- *               - Direccion
- *               - Telefono
- *               - Email
- *           example:
- *             ID_Proveedor: 4
- *             Direccion: "Nueva dirección actualizada"
- *             Telefono: "555-9999"
- *             Email: "actualizado@proveedor.com"
- *     responses:
- *       200:
- *         description: Ubicación actualizada exitosamente
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 ID_Ubicacion:
- *                   type: integer
- *                 ID_Proveedor:
- *                   type: integer
- *                 Direccion:
- *                   type: string
- *                 Telefono:
- *                   type: string
- *                 Email:
- *                   type: string
- *       404:
- *         description: Ubicación no encontrada
- *         content:
- *           application/json:
- *             example:
- *               error: Ubicación no encontrada
- */
 
 // Actualizar una ubicación de proveedor existente
 router.put('/:id', async (req, res) => {
@@ -284,50 +84,6 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-/**
- * @swagger
- * /api/ubicaciones_proveedores/{id}:
- *   delete:
- *     summary: Elimina una ubicación de proveedor
- *     tags:
- *       - Ubicaciones Proveedores
- *     parameters:
- *       - name: id
- *         in: path
- *         required: true
- *         description: ID de la ubicación a eliminar
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Ubicación eliminada exitosamente
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                 ubicacion:
- *                   type: object
- *                   properties:
- *                     ID_Ubicacion:
- *                       type: integer
- *                     ID_Proveedor:
- *                       type: integer
- *                     Direccion:
- *                       type: string
- *                     Telefono:
- *                       type: string
- *                     Email:
- *                       type: string
- *       404:
- *         description: Ubicación no encontrada
- *         content:
- *           application/json:
- *             example:
- *               error: Ubicación no encontrada
- */
 
 // Eliminar una ubicación de proveedor
 router.delete('/:id', async (req, res) => {
@@ -345,5 +101,42 @@ router.delete('/:id', async (req, res) => {
         res.status(500).json({ error: 'Error al eliminar ubicación de proveedor' });
     }
 });
+
+// Validar o agregar una nueva ubicación de proveedor
+router.post('/validar-o-crear', async (req, res) => {
+    const { nombre } = req.body;
+
+    // Validar que el nombre esté presente
+    if (!nombre) {
+        return res.status(400).json({ error: 'El campo nombre es obligatorio.' });
+    }
+
+    try {
+        // Verificar si la ubicación ya existe
+        const buscarUbicacion = `
+            SELECT * FROM ubicaciones_proveedores WHERE "Direccion" = $1
+        `;
+        const ubicacionExistente = await pool.query(buscarUbicacion, [nombre]);
+
+        if (ubicacionExistente.rowCount > 0) {
+            // Si existe, devolver la ubicación existente
+            return res.status(200).json(ubicacionExistente.rows[0]);
+        }
+
+        // Si no existe, crear la nueva ubicación
+        const crearUbicacion = `
+            INSERT INTO ubicaciones_proveedores ("Direccion")
+            VALUES ($1)
+            RETURNING *;
+        `;
+        const nuevaUbicacion = await pool.query(crearUbicacion, [nombre]);
+
+        res.status(201).json(nuevaUbicacion.rows[0]);
+    } catch (error) {
+        console.error('Error al validar o agregar ubicación:', error);
+        res.status(500).json({ error: 'Error al validar o agregar ubicación.' });
+    }
+});
+
 
 module.exports = router;

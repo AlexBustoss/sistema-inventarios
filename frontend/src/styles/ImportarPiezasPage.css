@@ -187,3 +187,234 @@ table tr:hover {
   cursor: not-allowed;
   opacity: 0.7;
 }
+
+/* Estilo para el dropdown de proveedores */
+.formulario-venta select {
+  padding: 0.75rem;
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  font-size: 1rem;
+  width: 100%;
+  transition: border-color 0.3s ease;
+  background-color: #fff; /* Fondo blanco */
+  color: #333; /* Texto negro */
+  appearance: none; /* Elimina el estilo predeterminado del navegador */
+}
+
+.formulario-venta select:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.formulario-venta option {
+  font-size: 1rem;
+  color: #333;
+}
+
+/* Para mantener consistencia con otros elementos en hover */
+.formulario-venta select:hover {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.agregar-nueva-pieza-boton {
+  background-color: #28a745;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.agregar-nueva-pieza-boton:hover {
+  background-color: #218838;
+}
+
+.agregar-nueva-pieza-boton:active {
+  background-color: #1e7e34;
+  transform: scale(0.98);
+}
+
+/* Contenedor de sugerencias */
+.sugerencias-container {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 8px;
+  background-color: #f8f9fa; /* Fondo claro */
+  border: 1px solid #ddd; /* Borde gris claro */
+}
+
+/* Título de sugerencias */
+.sugerencias-container h3 {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+/* Lista de sugerencias */
+.sugerencias-container ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sugerencias-container ul li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  border-bottom: 1px solid #ddd;
+}
+
+.sugerencias-container ul li:last-child {
+  border-bottom: none;
+}
+
+/* Botón de actualizar stock dentro de sugerencias */
+.actualizar-stock-boton {
+  background-color: #007bff;
+  color: white;
+  font-size: 0.9rem;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.actualizar-stock-boton:hover {
+  background-color: #0056b3;
+}
+
+.actualizar-stock-boton:active {
+  background-color: #003f7f;
+  transform: translateY(1px);
+}
+
+/* Botón para agregar nueva pieza */
+.agregar-nueva-pieza-boton {
+  display: block;
+  margin: 1rem auto 0;
+  background-color: #28a745;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.agregar-nueva-pieza-boton:hover {
+  background-color: #218838;
+}
+
+.agregar-nueva-pieza-boton:active {
+  background-color: #1e7e34;
+  transform: translateY(1px);
+}
+
+.formulario-nueva-pieza {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-top: 1rem;
+  background-color: #f9f9f9;
+}
+
+.confirmar-nueva-pieza-boton {
+  background-color: #28a745;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 0.8rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.confirmar-nueva-pieza-boton:hover {
+  background-color: #218838;
+}
+
+
+.formulario-nueva-pieza {
+  background: #f8f9fa;
+  padding: 1.5rem;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-top: 1rem;
+}
+
+.formulario-nueva-pieza h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #333;
+  text-align: center;
+}
+
+.formulario-nueva-pieza-campos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.formulario-nueva-pieza-campos label {
+  font-weight: bold;
+  color: #555;
+}
+
+.formulario-nueva-pieza-campos input {
+  padding: 0.75rem;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.formulario-nueva-pieza-campos input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.formulario-nueva-pieza-botones {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.confirmar-nueva-pieza-boton,
+.cancelar-nueva-pieza-boton {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.confirmar-nueva-pieza-boton:hover {
+  background: #0056b3;
+}
+
+.cancelar-nueva-pieza-boton {
+  background: #dc3545;
+}
+
+.cancelar-nueva-pieza-boton:hover {
+  background: #b21f3d;
+}

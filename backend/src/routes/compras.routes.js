@@ -6,22 +6,36 @@ const pool = initPool(); // Inicializar el pool de conexión
 
 // Registrar una nueva compra
 router.post('/', async (req, res) => {
-    const { Proveedor, Notas } = req.body;
+    const { n_venta, proveedor, notas, piezas } = req.body; // Usar nombres consistentes
 
-    // Validación básica
-    if (!Proveedor && !Notas) {
-        return res.status(400).json({ error: 'Debe proporcionar al menos un campo para registrar la compra' });
+    if (!n_venta || !proveedor || !Array.isArray(piezas) || piezas.length === 0) {
+        return res.status(400).json({ error: 'Datos incompletos: n_venta, proveedor, y piezas son obligatorios.' });
     }
 
     try {
-        const query = `
-            INSERT INTO compras ("proveedor", "notas")
-            VALUES ($1, $2)
-            RETURNING *;
+        const client = await pool.connect();
+        await client.query('BEGIN');
+
+        // Insertar la compra en la tabla `compras`
+        const compraQuery = `
+            INSERT INTO compras (n_venta, proveedor, notas)
+            VALUES ($1, $2, $3)
+            ON CONFLICT (n_venta) DO NOTHING
         `;
-        const values = [Proveedor || null, Notas || null];
-        const result = await pool.query(query, values);
-        res.status(201).json(result.rows[0]); // Devuelve la compra creada
+        await client.query(compraQuery, [n_venta, proveedor, notas]);
+
+        // Insertar los detalles de la compra en `detalle_compras`
+        const detalleQuery = `
+            INSERT INTO detalle_compras (n_venta, "ID_Pieza", cantidad)
+            VALUES ($1, $2, $3)
+        `;
+        for (const pieza of piezas) {
+            await client.query(detalleQuery, [n_venta, pieza.id_pieza, pieza.cantidad]);
+        }
+
+        await client.query('COMMIT');
+        client.release();
+        res.status(201).json({ message: 'Compra registrada correctamente' });
     } catch (error) {
         console.error('Error al registrar la compra:', error);
         res.status(500).json({ error: 'Error al registrar la compra' });
@@ -29,8 +43,8 @@ router.post('/', async (req, res) => {
 });
 
 // Asociar piezas a una compra
-router.post('/:nVenta/piezas', async (req, res) => {
-    const { nVenta } = req.params;
+router.post('/:n_venta/piezas', async (req, res) => {
+    const { n_venta } = req.params;
     const piezas = req.body.piezas; // Array de piezas a registrar
 
     if (!Array.isArray(piezas) || piezas.length === 0) {
@@ -39,19 +53,23 @@ router.post('/:nVenta/piezas', async (req, res) => {
 
     try {
         const queries = piezas.map((pieza) => {
+            // Determinar el estado de la pieza
+            const estado = pieza.id_proyecto ? 'Asignada' : 'Libre';
+
             const query = `
-                INSERT INTO piezas ("Descripcion", "Marca", "Ubicacion", "Stock_Actual", "Stock_Minimo", id_proyecto, "N_Venta")
-                VALUES ($1, $2, $3, $4, $5, $6, $7)
+                INSERT INTO piezas ("Descripcion", "Marca", "Ubicacion", "Stock_Actual", "Stock_Minimo", id_proyecto, "n_venta", estado)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
                 RETURNING *;
             `;
             const values = [
-                pieza.Descripcion,
-                pieza.Marca,
-                pieza.Ubicacion,
-                pieza.Stock_Actual,
-                pieza.Stock_Minimo,
+                pieza.descripcion,
+                pieza.marca,
+                pieza.ubicacion,
+                pieza.stock_actual,
+                pieza.stock_minimo,
                 pieza.id_proyecto || null,
-                nVenta,
+                n_venta,
+                estado, // Agregar el estado calculado
             ];
             return pool.query(query, values);
         });
@@ -66,6 +84,7 @@ router.post('/:nVenta/piezas', async (req, res) => {
     }
 });
 
+
 // Obtener todas las compras
 router.get('/', async (req, res) => {
     try {
@@ -78,20 +97,20 @@ router.get('/', async (req, res) => {
 });
 
 // Obtener una compra específica junto con sus piezas
-router.get('/:nVenta', async (req, res) => {
-    const { nVenta } = req.params;
+router.get('/:n_venta', async (req, res) => {
+    const { n_venta } = req.params;
 
     try {
         const compraQuery = `
-            SELECT * FROM compras WHERE "N_Venta" = $1;
+            SELECT * FROM compras WHERE n_venta = $1;
         `;
         const piezasQuery = `
-            SELECT * FROM piezas WHERE "N_Venta" = $1;
+            SELECT * FROM piezas WHERE n_venta = $1;
         `;
 
         const [compraResult, piezasResult] = await Promise.all([
-            pool.query(compraQuery, [nVenta]),
-            pool.query(piezasQuery, [nVenta]),
+            pool.query(compraQuery, [n_venta]),
+            pool.query(piezasQuery, [n_venta]),
         ]);
 
         if (compraResult.rowCount === 0) {
