@@ -4,7 +4,9 @@ const { initPool } = require('../config/db'); // Importar conexión a la base de
 
 const pool = initPool(); // Inicializar el pool de conexión
 
-// Registrar una nueva compra
+// ========================================
+// 1) Registrar una nueva compra en "compras" y "detalle_compras"
+// ========================================
 router.post('/', async (req, res) => {
     const { n_venta, proveedor, notas, piezas } = req.body; // Usar nombres consistentes
 
@@ -42,50 +44,63 @@ router.post('/', async (req, res) => {
     }
 });
 
-// Asociar piezas a una compra
+// ========================================
+// 2) Asociar stock de piezas a una compra, PERO ahora en "stock_detallado"
+// ========================================
 router.post('/:n_venta/piezas', async (req, res) => {
     const { n_venta } = req.params;
-    const piezas = req.body.piezas; // Array de piezas a registrar
+    const { piezas } = req.body; // Array de piezas a registrar en el inventario
 
     if (!Array.isArray(piezas) || piezas.length === 0) {
         return res.status(400).json({ error: 'Debe proporcionar al menos una pieza para registrar' });
     }
 
     try {
+        // Recorrer las piezas y armar consultas de inserción en stock_detallado
         const queries = piezas.map((pieza) => {
             // Determinar el estado de la pieza
-            const estado = pieza.id_proyecto ? 'Asignada' : 'Libre';
+            const estado = pieza.id_proyecto ? 'asignada' : 'libre';
 
+            // Insertamos en stock_detallado (id_pieza, id_proyecto, cantidad, estado, etc.)
+            // Ajusta las columnas según lo que en verdad manejes.
             const query = `
-                INSERT INTO piezas ("Descripcion", "Marca", "Ubicacion", "Stock_Actual", "Stock_Minimo", id_proyecto, "n_venta", estado)
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+                INSERT INTO stock_detallado (id_pieza, id_proyecto, id_proveedor, cantidad, estado, fecha_registro)
+                VALUES ($1, $2, $3, $4, $5, now())
                 RETURNING *;
             `;
+
+            // Supongamos que en "pieza" vienen: { id_pieza, id_proyecto, id_proveedor, cantidad, ... }
             const values = [
-                pieza.descripcion,
-                pieza.marca,
-                pieza.ubicacion,
-                pieza.stock_actual,
-                pieza.stock_minimo,
+                pieza.id_pieza,
                 pieza.id_proyecto || null,
-                n_venta,
-                estado, // Agregar el estado calculado
+                pieza.id_proveedor || null,
+                pieza.cantidad || 0,
+                estado
             ];
+
             return pool.query(query, values);
         });
 
+        // Ejecutar todas las inserciones
         const results = await Promise.all(queries);
-        const piezasRegistradas = results.map((result) => result.rows[0]);
 
-        res.status(201).json(piezasRegistradas);
+        // Mapear resultados
+        const stockRegistrado = results.map((result) => result.rows[0]);
+
+        // Devolver la respuesta
+        res.status(201).json({
+            message: `Stock registrado en "stock_detallado" para la compra ${n_venta}`,
+            stock: stockRegistrado
+        });
     } catch (error) {
-        console.error('Error al registrar piezas para la compra:', error);
-        res.status(500).json({ error: 'Error al registrar piezas para la compra' });
+        console.error('Error al registrar piezas para la compra en stock_detallado:', error);
+        res.status(500).json({ error: 'Error al registrar piezas en stock_detallado' });
     }
 });
 
-
-// Obtener todas las compras
+// ========================================
+// 3) Obtener todas las compras
+// ========================================
 router.get('/', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM compras');
@@ -96,7 +111,10 @@ router.get('/', async (req, res) => {
     }
 });
 
-// Obtener una compra específica junto con sus piezas
+// ========================================
+// 4) Obtener una compra específica junto con sus piezas
+//    (Si deseas ver también el stock_detallado relacionado, habría que ajustarlo)
+// ========================================
 router.get('/:n_venta', async (req, res) => {
     const { n_venta } = req.params;
 
@@ -119,6 +137,9 @@ router.get('/:n_venta', async (req, res) => {
 
         res.status(200).json({
             compra: compraResult.rows[0],
+            // OJO: Este "piezas" puede que ya no tenga sentido,
+            // porque ahora insertas stock en stock_detallado.
+            // Podrías omitirlo o mantenerlo si lo usas como "catálogo" o algo similar.
             piezas: piezasResult.rows,
         });
     } catch (error) {

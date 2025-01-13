@@ -1,81 +1,65 @@
 import React, { useState, useEffect, useCallback } from "react";
 import Header from "../components/Dashboard/Header";
 import "../styles/ImportarPiezasPage.css";
-import { registrarPaquete } from "../services/piezasService";
-import {
-  addNewPieza,
-  buscarPiezasSimilares,
-  registrarCompra,
-  asociarPiezasCompra,
-  asignarStockAProyecto,
-  liberarStockDeProyecto,
-  getMarcas,
-} from "../services/piezasService"; // Importa las nuevas funciones
-import "../styles/SugerenciasContainer.css";
-import debounce from "lodash.debounce";
-import PiezasAgregadasTable from "../components/PiezasAgregadasTable";
 import { getProveedores } from "../services/proveedoresService";
 
 
+import {
+  registrarPaquete,
+  buscarPiezasSimilares,
+  asignarStockAProyecto,
+  liberarStockDeProyecto,
+  getMarcas,
+} from "../services/piezasService"; 
+// asumiendo que ahí exportas tus funciones
+import "../styles/SugerenciasContainer.css";
+import debounce from "lodash.debounce";
+import PiezasAgregadasTable from "../components/PiezasAgregadasTable";
+
 const ImportarPiezasPage = () => {
-  const [numeroVenta, setNumeroVenta] = useState(""); // Campo para No. Venta
-  const [proveedor, setProveedor] = useState(""); // Campo para Proveedor
-  const [notas, setNotas] = useState(""); // Campo para Notas de la compra
-  const [listaProveedores, setListaProveedores] = useState([]); // Estado para guardar proveedores
+  const [numeroVenta, setNumeroVenta] = useState(""); 
+  const [proveedor, setProveedor] = useState(""); 
+  const [notas, setNotas] = useState(""); 
+  const [listaProveedores, setListaProveedores] = useState([]); 
+
+  // Estado local para la pieza que estás por agregar
   const [nuevaPieza, setNuevaPieza] = useState({
-    noParte: "",
-    cantidad: "",
+    ID_Pieza: "", 
+    cantidad: "",       // <-- Renombrado de "stockActual" a "cantidad"
     descripcion: "",
     marca: "",
     fechaRegistro: "",
     noProyecto: "",
-    nVenta: "",
-    ubicacion: "", 
-    stockMinimo: "",
+    n_venta: "", 
   });
-  const [piezasAgregadas, setPiezasAgregadas] = useState([]); // Almacenar piezas agregadas
-  const [sugerencias, setSugerencias] = useState([]); // Almacenar piezas sugeridas
-  const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false); // Confirmación
-  const [mostrarFormularioNuevaPieza, setMostrarFormularioNuevaPieza] = useState(false); // Controla si se muestra el formulario dinámico
-  const [nuevaPiezaCompleta, setNuevaPiezaCompleta] = useState({
-    noParte: "",
-    descripcion: "",
-    marca: "",
-    cantidad: "",
-    proveedor: "",
-    ubicacion: "",
-    stockMinimo: "",
-    estado: "Libre",
-    nVenta: "", 
-    noProyecto: "",
-  });
-  const [nVenta, setNVenta] = useState(""); // Estado para Número de Venta
-  const [marcas, setMarcas] = useState([]); // Estado para guardar las marcas
 
+  // Lista de piezas agregadas a la "compra"
+  const [piezasAgregadas, setPiezasAgregadas] = useState([]); 
 
+  const [marcas, setMarcas] = useState([]); 
+  const [sugerencias, setSugerencias] = useState([]); 
 
   useEffect(() => {
     const cargarDatos = async () => {
       try {
-  
+        console.log("Cargando marcas y proveedores...");
+
         // Obtener marcas
         const dataMarcas = await getMarcas();
-  
         if (Array.isArray(dataMarcas)) {
-          setMarcas(dataMarcas); // Guardar marcas
+          setMarcas(dataMarcas);
         } else {
-          console.error("Error: la respuesta de marcas no es un array. Respuesta:", dataMarcas);
-          setMarcas([]); // Evita errores posteriores
+          console.error("Respuesta inválida para marcas:", dataMarcas);
+          setMarcas([]);
         }
-  
+
         // Obtener proveedores
         const dataProveedores = await getProveedores();
-  
         if (Array.isArray(dataProveedores)) {
-          setListaProveedores(dataProveedores); // Guardar proveedores
+          setListaProveedores(dataProveedores);
         } else {
-          console.error("Error: la respuesta de proveedores no es un array. Respuesta:", dataProveedores);
-          setListaProveedores([]); // Evita errores posteriores
+          console.error("Respuesta inválida para proveedores:", dataProveedores);
+          setListaProveedores([]);
         }
       } catch (error) {
         console.error("Error al cargar datos:", error);
@@ -83,15 +67,9 @@ const ImportarPiezasPage = () => {
         setListaProveedores([]);
       }
     };
-  
+
     cargarDatos();
   }, []);
-  
-  
-  
-  
-  
-  
 
   // Función de debounce para la búsqueda
   const debouncedFetchSugerencias = useCallback(
@@ -106,7 +84,7 @@ const ImportarPiezasPage = () => {
     []
   );
 
-  // Manejar cambios en los inputs y actualizar sugerencias
+  // Maneja cambios en los inputs y también autocompletado
   const handleChange = (e) => {
     const { name, value } = e.target;
     setNuevaPieza((prev) => ({
@@ -114,9 +92,9 @@ const ImportarPiezasPage = () => {
       [name]: value,
     }));
 
-    // Llama a la búsqueda dinámica en base a los valores actuales
+    // Construir filtros para buscar piezas similares
     const filters = {
-      noParte: name === "noParte" ? value : nuevaPieza.noParte,
+      ID_Pieza: name === "ID_Pieza" ? value : nuevaPieza.ID_Pieza,
       descripcion: name === "descripcion" ? value : nuevaPieza.descripcion,
       marca: name === "marca" ? value : nuevaPieza.marca,
     };
@@ -124,112 +102,115 @@ const ImportarPiezasPage = () => {
     debouncedFetchSugerencias(filters);
   };
 
-  // Agregar pieza
-  const handleAgregarPieza = async () => {
+  // Botón "Agregar" (agrega la pieza a la tabla local)
+  const handleAgregarPieza = () => {
+    console.log("Estado actual de nuevaPieza:", nuevaPieza);
+
+    // Sincronizar n_venta con 'numeroVenta'
+    const piezaConVenta = {
+      ...nuevaPieza,
+      n_venta: numeroVenta || nuevaPieza.n_venta,
+    };
+
+    // Validar campos obligatorios
     if (
-      !nuevaPieza.noParte ||
-      !nuevaPieza.cantidad ||
-      !nuevaPieza.descripcion ||
-      !nuevaPieza.marca ||
-      !nuevaPieza.ubicacion ||
-      !nuevaPieza.nVenta // Validación del Número de Venta obligatorio
+      !piezaConVenta.ID_Pieza || 
+      !piezaConVenta.cantidad ||
+      !piezaConVenta.descripcion ||
+      !piezaConVenta.marca ||
+      !piezaConVenta.n_venta
     ) {
       alert("Por favor, completa todos los campos obligatorios.");
       return;
     }
-  
+
+    // Armar objeto para mostrar en la tabla local
+    const piezaAAgregar = {
+      ID_Pieza: piezaConVenta.ID_Pieza,
+      descripcion: piezaConVenta.descripcion,
+      cantidad: parseInt(piezaConVenta.cantidad, 10),
+      marca: piezaConVenta.marca,
+      n_venta: parseInt(piezaConVenta.n_venta, 10),
+      noProyecto: piezaConVenta.noProyecto || "",
+      fechaRegistro: piezaConVenta.fechaRegistro || "",
+    };
+
+    console.log("Pieza que se agregará al array local:", piezaAAgregar);
+
+    // Agregar al array de piezas
+    setPiezasAgregadas((prev) => [...prev, piezaAAgregar]);
+
+    // Limpiar formulario
+    setNuevaPieza({
+      ID_Pieza: "",
+      cantidad: "",
+      descripcion: "",
+      marca: "",
+      fechaRegistro: "",
+      noProyecto: "",
+      n_venta: "",
+    });
+    setSugerencias([]);
+  };
+
+  // Botón "Confirmar Compra"
+  const handleRegistrarCompra = async () => {
+    if (!proveedor || piezasAgregadas.length === 0) {
+      alert("Por favor, selecciona un proveedor y agrega al menos una pieza.");
+      return;
+    }
+
     try {
-      // Crear objeto para la pieza a enviar
-      const piezaAEnviar = {
-        noParte: nuevaPieza.noParte,
-        descripcion: nuevaPieza.descripcion,
-        cantidad: parseInt(nuevaPieza.cantidad, 10),
-        marca: nuevaPieza.marca,
-        ubicacion: nuevaPieza.ubicacion,
-        stockMinimo: parseInt(nuevaPieza.stockMinimo, 10),
-        nVenta: parseInt(nuevaPieza.nVenta, 10), // Número de Venta
-        idProyecto: nuevaPieza.noProyecto ? parseInt(nuevaPieza.noProyecto, 10) : null, // Proyecto opcional
-        estado: nuevaPieza.noProyecto ? "Asignada" : "Libre", // Determinar estado dinámicamente
+      // Construye el paquete para enviarlo al backend
+      const paquete = {
+        proveedor,  
+        notas,
+        piezas: piezasAgregadas.map((pieza) => ({
+          id_pieza: pieza.ID_Pieza,
+          cantidad: pieza.cantidad,  // <--- Renombrado "stockActual" => "cantidad"
+          n_venta: pieza.n_venta,
+          id_proyecto: pieza.noProyecto || null,
+          // Si en tu backend se requiere "marca" o "descripcion", agrégalo aquí
+        })),
       };
-  
-      console.log("Datos enviados para nueva pieza:", piezaAEnviar);
-  
-      // Llamar al servicio para agregar la nueva pieza
-      const response = await addNewPieza(piezaAEnviar);
-      alert("Pieza agregada exitosamente.");
-      
-      // Limpiar el formulario
+
+      console.log("Paquete a enviar al backend:", paquete);
+
+      // Llamar al servicio que registra el paquete en la BD
+      const response = await registrarPaquete(paquete);
+      alert(response.message || "Compra registrada exitosamente.");
+
+      // Resetear campos
+      setNumeroVenta("");
+      setProveedor("");
+      setNotas("");
+      setPiezasAgregadas([]);
       setNuevaPieza({
-        noParte: "",
+        ID_Pieza: "",
         cantidad: "",
         descripcion: "",
         marca: "",
-        ubicacion: "",
-        stockMinimo: "",
-        nVenta: "",
+        fechaRegistro: "",
         noProyecto: "",
+        n_venta: "",
       });
-      setSugerencias([]); // Limpiar sugerencias
     } catch (error) {
-      console.error("Error al agregar nueva pieza:", error);
-  
-      // Manejar errores específicos del backend
-      if (error.response && error.response.data) {
-        alert(`Error: ${error.response.data.error || "No se pudo agregar la pieza."}`);
-      } else {
-        alert("Ocurrió un error al agregar la nueva pieza. Inténtalo de nuevo.");
-      }
+      console.error("Error al registrar el paquete:", error);
+      alert("Ocurrió un error al registrar el paquete.");
     }
   };
-  
 
-  
-
-  // Confirmar y registrar la compra junto con las piezas asociadas
-const handleRegistrarCompra = async () => {
-  if (!proveedor || piezasAgregadas.length === 0) {
-    alert("Por favor, completa todos los campos de la compra y agrega al menos una pieza.");
-    return;
-  }
-
-  try {
-    const paquete = {
-      proveedor, // Aquí estamos enviando el ID del proveedor seleccionado
-      notas,
-      piezas: piezasAgregadas.map((pieza) => ({
-        id_pieza: pieza.noParte, // ID de la pieza
-        cantidad: parseInt(pieza.cantidad, 10), // Asegura que cantidad sea un número
-        id_proyecto: pieza.noProyecto || null, // Si no hay proyecto, envía null
-      })),
-    };
-
-    const response = await registrarPaquete(paquete); // Llama al backend para registrar el paquete
-
-    alert(response.message); // Muestra un mensaje de éxito
-    // Reinicia los campos y limpia la tabla después del registro
-    setNumeroVenta("");
-    setProveedor(""); // Reinicia el proveedor seleccionado
-    setNotas("");
-    setPiezasAgregadas([]);
-  } catch (error) {
-    console.error("Error al registrar el paquete:", error);
-    alert("Ocurrió un error al registrar el paquete.");
-  }
-};
-
-  
-  
-
-  // Nueva función: Manejar "Actualizar Stock"
+  // Manejar "Actualizar Stock" desde las sugerencias
   const handleActualizarStock = (pieza) => {
-    setNuevaPieza((prev) => ({
-      ...prev,
+    setNuevaPieza({
+      ...nuevaPieza,
+      ID_Pieza: pieza.ID_Pieza,
       descripcion: pieza.Descripcion,
       marca: pieza.Marca,
-    }));
+    });
   };
 
-  // Asignar stock a un proyecto
+  // Asignar stock a un proyecto (usa la lógica actual, solo renombra 'stockActual' => 'cantidad')
   const handleAsignarStock = async (pieza) => {
     if (!pieza.noProyecto || !pieza.cantidad) {
       alert("Por favor, ingresa un proyecto y una cantidad válida.");
@@ -237,7 +218,7 @@ const handleRegistrarCompra = async () => {
     }
 
     try {
-      await asignarStockAProyecto(pieza.noParte, pieza.noProyecto, pieza.cantidad);
+      await asignarStockAProyecto(pieza.ID_Pieza, pieza.noProyecto, pieza.cantidad);
       alert("Stock asignado exitosamente.");
     } catch (error) {
       console.error("Error al asignar stock:", error);
@@ -253,14 +234,13 @@ const handleRegistrarCompra = async () => {
     }
 
     try {
-      await liberarStockDeProyecto(pieza.noParte, pieza.noProyecto, pieza.cantidad);
+      await liberarStockDeProyecto(pieza.ID_Pieza, pieza.noProyecto, pieza.cantidad);
       alert("Stock liberado exitosamente.");
     } catch (error) {
       console.error("Error al liberar stock:", error);
       alert("No se pudo liberar el stock.");
     }
   };
-
 
   return (
     <div className="importar-piezas-page">
@@ -275,27 +255,37 @@ const handleRegistrarCompra = async () => {
 
       <div className="importar-piezas-main">
         <div className="formulario-container">
+          {/* Sección de datos de la "compra" */}
           <div className="formulario-venta">
             <label>No. Venta:</label>
             <input
               type="text"
               name="numeroVenta"
               value={numeroVenta}
-              onChange={(e) => setNumeroVenta(e.target.value)}
+              onChange={(e) => {
+                setNumeroVenta(e.target.value);
+                // De paso, sincronizar con el estado de nuevaPieza
+                setNuevaPieza((prev) => ({
+                  ...prev,
+                  n_venta: e.target.value,
+                }));
+              }}
               placeholder="Ingrese el número de venta"
             />
+
             <label>Proveedor:</label>
             <select
               value={proveedor}
-              onChange={(e) => setProveedor(e.target.value)} // Guarda el ID del proveedor seleccionado
+              onChange={(e) => setProveedor(e.target.value)}
             >
-              <option value="">Selecciona un proveedor</option> {/* Opción predeterminada */}
-              {listaProveedores.map((proveedor) => (
-                <option key={proveedor.ID_Proveedor} value={proveedor.ID_Proveedor}>
-                  {proveedor.Nombre} {/* Muestra el nombre del proveedor */}
+              <option value="">Selecciona un proveedor</option>
+              {listaProveedores.map((prov) => (
+                <option key={prov.ID_Proveedor} value={prov.ID_Proveedor}>
+                  {prov.Nombre}
                 </option>
               ))}
             </select>
+
             <label>Notas:</label>
             <input
               type="text"
@@ -306,13 +296,12 @@ const handleRegistrarCompra = async () => {
             />
           </div>
 
+          {/* Sección de datos de la pieza a agregar */}
           <div className="formulario-pieza">
-
-            
             <input
               type="text"
-              name="noParte"
-              value={nuevaPieza.noParte}
+              name="ID_Pieza"
+              value={nuevaPieza.ID_Pieza}
               onChange={handleChange}
               placeholder="No. Parte"
             />
@@ -330,24 +319,13 @@ const handleRegistrarCompra = async () => {
               onChange={handleChange}
               placeholder="Descripción"
             />
-            <select
-            name="marca"
-            value={nuevaPieza.marca}
-            onChange={handleChange}
-          >
-            <option value="">Selecciona una marca</option>
-            {Array.isArray(marcas) && marcas.length > 0 ? (
-              marcas.map((marca) => (
-                <option key={marca.ID_Pieza} value={marca.Marca}>
-                  {marca.Marca}
-                </option>
-              ))
-            ) : (
-              <option value="">No hay marcas disponibles</option>
-            )}
-          </select>
-
-
+            <input
+              type="text"
+              name="marca"
+              value={nuevaPieza.marca}
+              onChange={handleChange}
+              placeholder="Escribe la marca"
+            />
             <input
               type="date"
               name="fechaRegistro"
@@ -367,229 +345,34 @@ const handleRegistrarCompra = async () => {
           </div>
         </div>
 
+        {/* Sugerencias de piezas similares */}
         <div className="sugerencias-container">
-  {sugerencias.length > 0 ? (
-    <>
-      <h3>Piezas Similares Encontradas</h3>
-      <ul>
-        {sugerencias.map((pieza) => (
-          <li key={pieza.ID_Pieza}>
-            <span>{pieza.Descripcion}</span>
-            <button
-              className="actualizar-stock-boton"
-              onClick={() => handleActualizarStock(pieza)}
-            >
-              Actualizar Stock
-            </button>
-          </li>
-        ))}
-      </ul>
-    </>
-  ) : (
-    <div>
-      <h3>No se encontraron piezas similares.</h3>
-      {!mostrarFormularioNuevaPieza ? (
-        <button
-          className="agregar-nueva-pieza-boton"
-          onClick={() => setMostrarFormularioNuevaPieza(true)}
-        >
-          Agregar como nueva pieza
-        </button>
-      ) : (
-        <div className="formulario-nueva-pieza">
-  <h3>Agregar Nueva Pieza</h3>
-  <div className="formulario-nueva-pieza-campos">
-    <label>Proveedor:</label>
-    <select
-      value={nuevaPiezaCompleta.proveedor}
-      onChange={(e) =>
-        setNuevaPiezaCompleta({
-          ...nuevaPiezaCompleta,
-          proveedor: e.target.value,
-        })
-      }
-    >
-      <option value="">Selecciona un proveedor</option>
-      {listaProveedores.map((prov) => (
-        <option key={prov.ID_Proveedor} value={prov.ID_Proveedor}>
-          {prov.Nombre}
-        </option>
-      ))}
-    </select>
-
-    <label>No. Parte:</label>
-    <input
-      type="text"
-      name="noParte"
-      value={nuevaPiezaCompleta.noParte}
-      onChange={(e) =>
-        setNuevaPiezaCompleta({
-          ...nuevaPiezaCompleta,
-          noParte: e.target.value,
-        })
-      }
-      placeholder="Ej: 12345"
-    />
-
-    <label>Descripción:</label>
-    <input
-      type="text"
-      name="descripcion"
-      value={nuevaPiezaCompleta.descripcion}
-      onChange={(e) =>
-        setNuevaPiezaCompleta({
-          ...nuevaPiezaCompleta,
-          descripcion: e.target.value,
-        })
-      }
-      placeholder="Ej: Pieza de metal"
-    />
-
-<label>Marca:</label>
-<select
-  value={nuevaPiezaCompleta.marca}
-  onChange={(e) =>
-    setNuevaPiezaCompleta({
-      ...nuevaPiezaCompleta,
-      marca: e.target.value,
-    })
-  }
->
-  <option value="">Selecciona una marca</option> {/* Opción predeterminada */}
-  {marcas.map((marca, index) => {
-    console.log("Iterando sobre marcas para el dropdown:", marca);
-    return (
-      <option key={index} value={marca.Marca}>
-        {marca.Marca} {/* Mostrar el nombre de la marca */}
-      </option>
-    );
-  })}
-</select>
-
-
-
-
-
-
-    <label>Ubicación:</label>
-    <input
-      type="text"
-      name="ubicacion"
-      value={nuevaPiezaCompleta.ubicacion}
-      onChange={(e) =>
-        setNuevaPiezaCompleta({
-          ...nuevaPiezaCompleta,
-          ubicacion: e.target.value,
-        })
-      }
-      placeholder="Ej: Estante A"
-    />
-
-    <label>Stock Mínimo:</label>
-    <input
-      type="number"
-      name="stockMinimo"
-      value={nuevaPiezaCompleta.stockMinimo}
-      onChange={(e) =>
-        setNuevaPiezaCompleta({
-          ...nuevaPiezaCompleta,
-          stockMinimo: e.target.value,
-        })
-      }
-      placeholder="Ej: 10"
-    />
-
-    <label>Cantidad Inicial:</label>
-    <input
-      type="number"
-      name="cantidad"
-      value={nuevaPiezaCompleta.cantidad}
-      onChange={(e) =>
-        setNuevaPiezaCompleta({
-          ...nuevaPiezaCompleta,
-          cantidad: e.target.value,
-        })
-      }
-      placeholder="Ej: 50"
-    />
-
-<label>Número de Venta:</label>
-<input
-  type="text"
-  name="nVenta"
-  value={nuevaPiezaCompleta.nVenta}
-  onChange={(e) =>
-    setNuevaPiezaCompleta({
-      ...nuevaPiezaCompleta,
-      nVenta: e.target.value,
-    })
-  }
-  placeholder="Ej: 123"
-/>
-
-<label>Número de Proyecto (opcional):</label>
-<input
-  type="text"
-  name="noProyecto"
-  value={nuevaPiezaCompleta.noProyecto}
-  onChange={(e) =>
-    setNuevaPiezaCompleta({
-      ...nuevaPiezaCompleta,
-      noProyecto: e.target.value,
-    })
-  }
-  placeholder="Ej: 456"
-/>
-
-  </div>
-
-  <div className="formulario-nueva-pieza-botones">
-    <button
-      className="confirmar-nueva-pieza-boton"
-      onClick={async () => {
-        try {
-          console.log("Datos enviados para nueva pieza:", nuevaPiezaCompleta);
-          await addNewPieza(nuevaPiezaCompleta);
-          alert("Pieza agregada exitosamente.");
-          setMostrarFormularioNuevaPieza(false);
-          setNuevaPiezaCompleta({
-            noParte: "",
-            descripcion: "",
-            marca: "",
-            cantidad: "",
-            proveedor: "",
-            ubicacion: "",
-            stockMinimo: "",
-            estado: "Libre",
-          });
-          debouncedFetchSugerencias({
-            noParte: nuevaPiezaCompleta.noParte,
-          });
-        } catch (error) {
-          console.error("Error al agregar nueva pieza:", error);
-          alert("Error al agregar la nueva pieza.");
-        }
-      }}
-    >
-      Confirmar
-    </button>
-    <button
-      className="cancelar-nueva-pieza-boton"
-      onClick={() => setMostrarFormularioNuevaPieza(false)}
-    >
-      Cancelar
-    </button>
-  </div>
-</div>
-
-
-      )}
-    </div>
-  )}
-</div>
-
+          {sugerencias.length > 0 ? (
+            <>
+              <h3>Piezas Similares Encontradas</h3>
+              <ul>
+                {sugerencias.map((pieza) => (
+                  <li key={pieza.ID_Pieza}>
+                    <span>{pieza.Descripcion}</span>
+                    <button
+                      className="actualizar-stock-boton"
+                      onClick={() => handleActualizarStock(pieza)}
+                    >
+                      Actualizar Stock
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : (
+            <div>
+              <h3>No se encontraron piezas similares.</h3>
+            </div>
+          )}
+        </div>
       </div>
 
+      {/* Tabla de Piezas Agregadas */}
       <div className="piezas-agregadas-section">
         <h3>Piezas Agregadas</h3>
         <PiezasAgregadasTable

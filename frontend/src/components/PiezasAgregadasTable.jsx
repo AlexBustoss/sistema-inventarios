@@ -57,7 +57,7 @@ const PiezasAgregadasTable = ({ piezas, setPiezas}) => {
           {piezas.length > 0 ? (
             piezas.map((pieza, index) => (
               <tr key={index}>
-                <td>{pieza.noParte}</td>
+                <td>{pieza.ID_Pieza}</td>
                 <td>{pieza.cantidad}</td>
                 <td>{pieza.descripcion}</td>
                 <td>{pieza.marca}</td>

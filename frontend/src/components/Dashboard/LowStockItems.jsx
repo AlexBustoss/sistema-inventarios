@@ -20,7 +20,7 @@ const LowStockItems = ({ lowStockItems = [] }) => {
             <tr>
               <th>ID Pieza</th>
               <th>Nombre</th>
-              <th>Cantidad</th>
+              <th>Stock Libre</th> {/* Ajusta el texto de la columna */}
             </tr>
           </thead>
           <tbody>
@@ -28,8 +28,8 @@ const LowStockItems = ({ lowStockItems = [] }) => {
               <tr key={item.ID_Pieza}>
                 <td>{item.ID_Pieza}</td>
                 <td>{item.Descripcion}</td>
-                {/* Muestra solo el número sin contenedor adicional */}
-                <td>{item.Stock_Actual}</td>
+                {/* Cambia `item.Stock_Actual` por la nueva propiedad del backend */}
+                <td>{item.stock_libre}</td> 
               </tr>
             ))}
           </tbody>
