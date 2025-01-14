@@ -3,7 +3,8 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "../pages/LoginPage";
 import DashboardPage from "../pages/DashboardPage";
 import PiezasPage from "../pages/PiezasPage";
-import ImportarPiezasPage from "../pages/ImportarPiezasPage"; // Importa la nueva página
+import ImportarPiezasPage from "../pages/ImportarPiezasPage"; 
+import CrearPiezaPage from "../pages/CrearPiezaPage"; 
 
 const AppRouter = () => {
   const [token, setToken] = useState(() => localStorage.getItem("token")); // Estado inicial del token
@@ -59,6 +60,16 @@ const AppRouter = () => {
         element={
           <PrivateRoute>
             <ImportarPiezasPage />
+          </PrivateRoute>
+        }
+      />
+
+      {/* Nueva Ruta para Crear Piezas */}
+      <Route
+        path="/nueva-pieza"
+        element={
+          <PrivateRoute>
+            <CrearPiezaPage />
           </PrivateRoute>
         }
       />

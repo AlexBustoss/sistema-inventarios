@@ -252,3 +252,19 @@ const validarOAgregarUbicacion = async (ubicacion) => {
     return null;
   }
 };
+
+
+export const getPiezasWithStock = async () => {
+  const response = await axios.get("/api/piezas/with-stock");
+  return response.data; // Devuelve [{ ID_Pieza, Descripcion, Marca, stockLibre }, ...]
+};
+
+// Función para agregar una nueva pieza al catálogo
+export const addNewCatalogPieza = async ({ descripcion, marca }) => {
+  const response = await axios.post("/api/piezas", {
+    descripcion,
+    marca
+  });
+  return response.data; // { ID_Pieza, Descripcion, Marca, ... }
+};
+

@@ -20,7 +20,7 @@ const LowStockItems = ({ lowStockItems = [] }) => {
             <tr>
               <th>ID Pieza</th>
               <th>Nombre</th>
-              <th>Stock Libre</th> {/* Ajusta el texto de la columna */}
+              <th>Stock Libre</th>
             </tr>
           </thead>
           <tbody>
@@ -28,7 +28,6 @@ const LowStockItems = ({ lowStockItems = [] }) => {
               <tr key={item.ID_Pieza}>
                 <td>{item.ID_Pieza}</td>
                 <td>{item.Descripcion}</td>
-                {/* Cambia `item.Stock_Actual` por la nueva propiedad del backend */}
                 <td>{item.stock_libre}</td> 
               </tr>
             ))}

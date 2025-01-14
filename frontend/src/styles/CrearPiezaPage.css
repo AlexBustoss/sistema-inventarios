@@ -1,0 +1,152 @@
+/* CrearPiezaPage.css */
+
+/* Contenedor principal con background y posición */
+.crear-pieza-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 1.5rem;
+    /* color y background ya los traes de global, si deseas, pon un degrade sutil */
+  }
+  
+  /* Botón "Regresar a Piezas" */
+  .back-button {
+    background-color: #0056b3;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 86, 179, 0.3);
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+    align-self: flex-start; /* para que quede a la izquierda */
+  }
+  
+  .back-button:hover {
+    background-color: #004494;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 68, 148, 0.4);
+  }
+  
+  .back-button:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 8px rgba(0, 68, 148, 0.4);
+  }
+  
+  /* Tarjeta (card) donde va el formulario */
+  .crear-pieza-card {
+    background: #fff;
+    width: 100%;
+    max-width: 500px; /* Ajusta el ancho máximo */
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    padding: 2rem;
+    animation: fadeIn 0.8s ease-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .crear-pieza-title {
+    font-size: 1.5rem;
+    color: #0056b3;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+  }
+  
+  /* Formulario */
+  .crear-pieza-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Grupo de entrada */
+  .input-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  .input-group label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-weight: 600;
+    color: #444;
+  }
+  
+  .input-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+  
+  .input-group input:focus {
+    border-color: #0056b3;
+    box-shadow: 0 0 8px rgba(0, 86, 179, 0.3);
+    outline: none;
+  }
+  
+  /* Botón "Guardar" */
+  .crear-pieza-submit {
+    background-color: #28a745;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: bold;
+    padding: 0.8rem;
+    border: none;
+    border-radius: 8px;
+    width: 100%;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    transition: all 0.3s ease;
+    margin-top: 0.5rem;
+  }
+  
+  .crear-pieza-submit:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(33, 136, 56, 0.4);
+  }
+  
+  .crear-pieza-submit:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 8px rgba(33, 136, 56, 0.4);
+  }
+  
+  /* Mensaje de éxito o error */
+  .crear-pieza-mensaje {
+    margin-top: 1rem;
+    font-weight: 600;
+    color: #0056b3; /* O un color de error si prefieres */
+  }
+  
+  @media (max-width: 768px) {
+    .crear-pieza-card {
+      padding: 1rem;
+    }
+    .input-group input {
+      font-size: 0.95rem;
+    }
+    .crear-pieza-title {
+      font-size: 1.3rem;
+    }
+  }
+  

@@ -3,7 +3,7 @@ import Header from "../components/Dashboard/Header";
 import "../styles/PiezasPage.css";
 import PiezasTable from "../components/PiezasPage/PiezasTable";
 import NavigationButtons from "../components/Dashboard/NavigationButtons";
-import { getAllPiezas } from "../services/piezasService";
+import { getAllPiezas,  getPiezasWithStock} from "../services/piezasService";
 
 const PiezasPage = () => {
   const [piezas, setPiezas] = useState([]);
@@ -18,7 +18,7 @@ const PiezasPage = () => {
   useEffect(() => {
     const fetchPiezas = async () => {
       try {
-        const data = await getAllPiezas();
+        const data = await getPiezasWithStock();
         setPiezas(data);
       } catch (error) {
         console.error("Error al cargar las piezas:", error);
@@ -50,6 +50,11 @@ const PiezasPage = () => {
           buttons={[
             {
               id: 1,
+              text: "Nueva Pieza",               // <--- Nuevo botón
+              onClick: () => (window.location.href = "/nueva-pieza"),
+            },
+            {
+              id: 2,
               text: "Importar Piezas",
               onClick: () => (window.location.href = "/importar-piezas"), // Navegación al ImportarPiezasPage
             },

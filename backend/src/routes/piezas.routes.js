@@ -24,6 +24,32 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Ej: GET /api/piezas/with-stock
+// Retorna { ID_Pieza, Descripcion, Marca, stockLibre }
+router.get('/with-stock', async (req, res) => {
+    console.log("Entró a /with-stock sin problemas");
+
+    try {
+      const query = `
+        SELECT p."ID_Pieza",
+               p."Descripcion",
+               p."Marca",
+               COALESCE(SUM(s.cantidad), 0) AS "stockLibre"
+        FROM piezas p
+        LEFT JOIN stock_detallado s
+          ON s.id_pieza = p."ID_Pieza"
+          AND s.estado = 'libre'
+        GROUP BY p."ID_Pieza"
+        ORDER BY p."ID_Pieza";
+      `;
+      const result = await pool.query(query);
+      res.json(result.rows);
+    } catch (error) {
+      console.error('Error al obtener piezas con stock:', error);
+      res.status(500).json({ error: 'Error interno' });
+    }
+  });
+
 //------------------------------------------------------
 // 2. (OPCIONAL) Endpoint de piezas con "bajo stock" - AHORA EN stock_detallado
 //    Si quieres eliminarlo completamente, hazlo.
@@ -406,5 +432,9 @@ router.post('/crear-con-stock', async (req, res) => {
     client.release();
   }
 });
+
+
+  
+  
 
 module.exports = router;

@@ -4,10 +4,12 @@ import "../../styles/SearchBar.css";
 import "../../styles/Notification.css";
 import ConfirmDialog from "../../components/ConfirmDialog";
 
+/**
+ * Este componente muestra y edita las piezas del catálogo.
+ * Ajustado para NO usar Ubicacion, Stock_Actual, Stock_Minimo.
+ */
 const PiezasTable = ({ piezas, setPiezas }) => {
-  const [filters, setFilters] = useState({
-    keyword: "",
-  });
+  const [filters, setFilters] = useState({ keyword: "" });
   const [sortedPiezas, setSortedPiezas] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [editingData, setEditingData] = useState(null);
@@ -15,8 +17,9 @@ const PiezasTable = ({ piezas, setPiezas }) => {
   const [deleteId, setDeleteId] = useState(null);
   const [notification, setNotification] = useState(null);
 
-  // Ordenar las piezas alfabéticamente por Descripción al cargar el componente
+  // Ordenar las piezas por Descripcion al cargar el componente
   useEffect(() => {
+    // Asegúrate de que `piezas.Descripcion` sea un string
     const sorted = [...piezas].sort((a, b) =>
       (a.Descripcion || "").localeCompare(b.Descripcion || "", "es", { sensitivity: "base" })
     );
@@ -25,7 +28,7 @@ const PiezasTable = ({ piezas, setPiezas }) => {
 
   // Función para capitalizar la primera letra de cada palabra
   const capitalizeFirstLetter = (text) => {
-    if (!text) return ""; // Manejo de texto undefined o null
+    if (!text) return "";
     return text
       .toLowerCase()
       .replace(/\b\w/g, (char) => char.toUpperCase());
@@ -33,7 +36,7 @@ const PiezasTable = ({ piezas, setPiezas }) => {
 
   // Función para eliminar acentos
   const normalizeText = (text) => {
-    if (!text) return ""; // Manejo de texto undefined o null
+    if (!text) return "";
     return text
       .toLowerCase()
       .normalize("NFD")
@@ -52,10 +55,10 @@ const PiezasTable = ({ piezas, setPiezas }) => {
   // Filtrado dinámico con normalización
   const filteredPiezas = sortedPiezas.filter((pieza) => {
     const keywordNormalized = normalizeText(filters.keyword);
+    // Filtramos solo por Descripcion y Marca (quitamos Ubicacion)
     return (
       normalizeText(pieza.Descripcion || "").includes(keywordNormalized) ||
-      normalizeText(pieza.Marca || "").includes(keywordNormalized) ||
-      normalizeText(pieza.Ubicacion || "").includes(keywordNormalized)
+      normalizeText(pieza.Marca || "").includes(keywordNormalized)
     );
   });
 
@@ -90,38 +93,28 @@ const PiezasTable = ({ piezas, setPiezas }) => {
   // Función para manejar la edición
   const handleEdit = (pieza) => {
     setIsEditing(true);
-    setEditingData(pieza);
+    setEditingData({ ...pieza });
   };
 
   // Guardar los cambios realizados en la edición
   const handleSaveEdit = async () => {
-    if (
-      !editingData.Descripcion ||
-      !editingData.Marca ||
-      !editingData.Ubicacion ||
-      editingData.Stock_Actual === undefined ||
-      editingData.Stock_Minimo === undefined ||
-      !editingData.estado
-    ) {
-      setNotification({ message: "Por favor, completa todos los campos", type: "warning" });
+    // Validamos solo Descripcion, Marca, estado (quitar Ubicacion, Stock_Actual, Stock_Minimo)
+    if (!editingData.Descripcion || !editingData.Marca || !editingData.estado) {
+      setNotification({ message: "Por favor, completa Descripcion, Marca y estado", type: "warning" });
       return;
     }
 
     try {
       const response = await fetch(`http://localhost:3000/api/piezas/${editingData.ID_Pieza}`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(editingData),
       });
 
       if (response.ok) {
         const updatedPieza = await response.json();
         setPiezas((prevPiezas) =>
-          prevPiezas.map((pieza) =>
-            pieza.ID_Pieza === editingData.ID_Pieza ? updatedPieza : pieza
-          )
+          prevPiezas.map((pieza) => (pieza.ID_Pieza === editingData.ID_Pieza ? updatedPieza : pieza))
         );
         setIsEditing(false);
         setEditingData(null);
@@ -131,14 +124,17 @@ const PiezasTable = ({ piezas, setPiezas }) => {
       }
     } catch (error) {
       console.error("Error actualizando la pieza:", error);
-      setNotification({ message: "Error actualizando la pieza. Verifica la conexión o los datos.", type: "error" });
+      setNotification({
+        message: "Error actualizando la pieza. Verifica la conexión o los datos.",
+        type: "error"
+      });
     }
 
     setTimeout(() => setNotification(null), 3000);
   };
 
   // Manejo de cambios en los campos de edición
-  const handleChange = (e) => {
+  const handleChangeEdit = (e) => {
     const { name, value } = e.target;
     setEditingData((prevData) => ({
       ...prevData,
@@ -167,125 +163,92 @@ const PiezasTable = ({ piezas, setPiezas }) => {
         />
       </div>
 
-      {/* Tabla de piezas */}
+      {/* Tabla de piezas (ya sin Ubicacion, Stock_Actual, Stock_Minimo) */}
       <table className="piezas-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Descripción</th>
-            <th>Marca</th>
-            <th>Ubicación</th>
-            <th>Stock Actual</th>
-            <th>Stock Mínimo</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Descripción</th>
+          <th>Marca</th>
+          <th>Stock Libre</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+
         <tbody>
           {filteredPiezas.length > 0 ? (
-            filteredPiezas.map((pieza) => (
-              <tr key={pieza.ID_Pieza}>
-                {isEditing && editingData.ID_Pieza === pieza.ID_Pieza ? (
-                  <>
-                    <td>{pieza.ID_Pieza}</td>
-                    <td>
-                      <input
-                        type="text"
-                        name="Descripcion"
-                        value={editingData.Descripcion || ""}
-                        onChange={handleChange}
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="text"
-                        name="Marca"
-                        value={editingData.Marca || ""}
-                        onChange={handleChange}
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="text"
-                        name="Ubicacion"
-                        value={editingData.Ubicacion || ""}
-                        onChange={handleChange}
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="number"
-                        name="Stock_Actual"
-                        value={editingData.Stock_Actual || 0}
-                        onChange={handleChange}
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="number"
-                        name="Stock_Minimo"
-                        value={editingData.Stock_Minimo || 0}
-                        onChange={handleChange}
-                      />
-                    </td>
-                    <td>
-                      <select
-                        name="estado"
-                        value={editingData.estado || "Libre"}
-                        onChange={handleChange}
-                        className="select-input"
-                      >
-                        <option value="Libre">Libre</option>
-                        <option value="Asignada">Asignada</option>
-                      </select>
-                    </td>
-                    <td>
-                      <button className="save-button" onClick={handleSaveEdit}>
-                        Guardar
-                      </button>
-                      <button
-                        className="cancel-button"
-                        onClick={() => setIsEditing(false)}
-                      >
-                        Cancelar
-                      </button>
-                    </td>
-                  </>
-                ) : (
-                  <>
-                    <td>{pieza.ID_Pieza || "N/A"}</td>
-                    <td>{capitalizeFirstLetter(pieza.Descripcion || "N/A")}</td>
-                    <td>{capitalizeFirstLetter(pieza.Marca || "N/A")}</td>
-                    <td>{capitalizeFirstLetter(pieza.Ubicacion || "N/A")}</td>
-                    <td>{pieza.Stock_Actual || 0}</td>
-                    <td>{pieza.Stock_Minimo || 0}</td>
-                    <td>{capitalizeFirstLetter(pieza.estado || "N/A")}</td>
-                    <td>
-                      <button
-                        className="edit-button"
-                        onClick={() => handleEdit(pieza)}
-                      >
-                        Editar
-                      </button>
-                      <button
-                        className="delete-button"
-                        onClick={() => confirmDelete(pieza.ID_Pieza)}
-                      >
-                        Eliminar
-                      </button>
-                    </td>
-                  </>
-                )}
-              </tr>
-            ))
+            filteredPiezas.map((pieza) => {
+              const isRowBeingEdited = isEditing && editingData?.ID_Pieza === pieza.ID_Pieza;
+              
+              return (
+                <tr key={pieza.ID_Pieza}>
+                  {isRowBeingEdited ? (
+                    <>
+                      <td>{pieza.ID_Pieza}</td>
+                      <td>
+                        <input
+                          type="text"
+                          name="Descripcion"
+                          value={editingData.Descripcion || ""}
+                          onChange={handleChangeEdit}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          name="Marca"
+                          value={editingData.Marca || ""}
+                          onChange={handleChangeEdit}
+                        />
+                      </td>
+                      <td>
+                        <select
+                          name="estado"
+                          value={editingData.estado || "libre"}
+                          onChange={handleChangeEdit}
+                        >
+                          <option value="libre">libre</option>
+                          <option value="asignada">asignada</option>
+                        </select>
+                      </td>
+                      <td>
+                        <button className="save-button" onClick={handleSaveEdit}>Guardar</button>
+                        <button
+                          className="cancel-button"
+                          onClick={() => {
+                            setIsEditing(false);
+                            setEditingData(null);
+                          }}
+                        >
+                          Cancelar
+                        </button>
+                      </td>
+                    </>
+                  ) : (
+                    <>
+                      <td>{pieza.ID_Pieza || "N/A"}</td>
+                      <td>{capitalizeFirstLetter(pieza.Descripcion || "N/A")}</td>
+                      <td>{capitalizeFirstLetter(pieza.Marca || "N/A")}</td>
+                      <td>{pieza.stockLibre ?? "n/a"}</td>
+
+                      <td>
+                        <button className="edit-button" onClick={() => handleEdit(pieza)}>Editar</button>
+                        <button className="delete-button" onClick={() => confirmDelete(pieza.ID_Pieza)}>Eliminar</button>
+                      </td>
+                    </>
+                  )}
+                </tr>
+              );
+            })
           ) : (
             <tr>
-              <td colSpan="8" className="no-data">
+              <td colSpan="5" className="no-data">
                 No hay datos disponibles
               </td>
             </tr>
           )}
         </tbody>
+
       </table>
 
       {/* Confirmación de eliminación */}
