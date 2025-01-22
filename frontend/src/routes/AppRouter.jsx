@@ -5,6 +5,10 @@ import DashboardPage from "../pages/DashboardPage";
 import PiezasPage from "../pages/PiezasPage";
 import ImportarPiezasPage from "../pages/ImportarPiezasPage"; 
 import CrearPiezaPage from "../pages/CrearPiezaPage"; 
+import RequisicionesPage from "../pages/RequisitionScreen";
+import RequisitionEditScreen from "../pages/RequisitionEditScreen";
+import RequisitionHomeScreen from "../pages/RequisitionHomeScreen";
+
 
 const AppRouter = () => {
   const [token, setToken] = useState(() => localStorage.getItem("token")); // Estado inicial del token
@@ -70,6 +74,36 @@ const AppRouter = () => {
         element={
           <PrivateRoute>
             <CrearPiezaPage />
+          </PrivateRoute>
+        }
+      />
+
+      {/* Nueva Ruta para gestion de requisiciones */}
+      <Route
+        path="/gestion-requisiciones"
+        element={
+          <PrivateRoute>
+            <RequisicionesPage />
+          </PrivateRoute>
+        }
+      />
+
+      {/* Nueva Ruta para editar de requisiciones */}
+      <Route
+        path="/editar-requisicion"
+        element={
+          <PrivateRoute>
+            <RequisitionEditScreen />
+          </PrivateRoute>
+        }
+      />
+
+      {/* Nueva Ruta para home de requisiciones */}
+      <Route
+        path="/home-requisiciones"
+        element={
+          <PrivateRoute>
+            <RequisitionHomeScreen />
           </PrivateRoute>
         }
       />

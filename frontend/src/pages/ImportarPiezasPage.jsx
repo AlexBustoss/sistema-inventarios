@@ -2,8 +2,6 @@ import React, { useState, useEffect, useCallback } from "react";
 import Header from "../components/Dashboard/Header";
 import "../styles/ImportarPiezasPage.css";
 import { getProveedores } from "../services/proveedoresService";
-
-
 import {
   registrarPaquete,
   buscarPiezasSimilares,
@@ -25,7 +23,7 @@ const ImportarPiezasPage = () => {
   // Estado local para la pieza que estás por agregar
   const [nuevaPieza, setNuevaPieza] = useState({
     ID_Pieza: "", 
-    cantidad: "",       // <-- Renombrado de "stockActual" a "cantidad"
+    cantidad: "",
     descripcion: "",
     marca: "",
     fechaRegistro: "",
@@ -167,7 +165,7 @@ const ImportarPiezasPage = () => {
         notas,
         piezas: piezasAgregadas.map((pieza) => ({
           id_pieza: pieza.ID_Pieza,
-          cantidad: pieza.cantidad,  // <--- Renombrado "stockActual" => "cantidad"
+          cantidad: pieza.cantidad,
           n_venta: pieza.n_venta,
           id_proyecto: pieza.noProyecto || null,
           // Si en tu backend se requiere "marca" o "descripcion", agrégalo aquí

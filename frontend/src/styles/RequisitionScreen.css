@@ -1,0 +1,495 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f6f9;
+  }
+  
+  .requisition-container {
+    max-width: 99%;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+  
+  /* Header Styles */
+  .requisition-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ffffff;
+    padding: 1rem 2rem;
+    border-bottom: 2px solid #d1d5db;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .requisition-logo {
+    height: 60px;
+  }
+  
+  .requisition-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #374151;
+    margin: 0;
+  }
+  
+  .requisition-send-button {
+    background-color: #10b981;
+    color: white;
+    border: none;
+    padding: 0.5rem 1.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+  
+  .requisition-send-button:hover {
+    background-color: #059669;
+  }
+  
+  /* Section Styles */
+  .requisition-section {
+    margin-top: 2rem;
+    background-color: #ffffff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .requisition-section-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #374151;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 0.5rem;
+  }
+  
+  /* Grid Styles */
+  .requisition-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+  }
+  
+  .requisition-grid-item {
+    background-color: #f9fafb;
+    padding: 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 5px;
+  }
+  
+  .requisition-grid-item strong {
+    color: #374151;
+    display: block;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .requisition-grid-item p {
+    color: #6b7280;
+    font-size: 0.9rem;
+    margin: 0;
+  }
+  
+  /* Table Styles */
+  .requisition-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+  }
+  
+  .requisition-table th,
+  .requisition-table td {
+    border: 1px solid #e5e7eb;
+    padding: 0.75rem;
+    text-align: left;
+    font-size: 0.9rem;
+  }
+  
+  .requisition-table th {
+    background-color: #f9fafb;
+    color: #374151;
+    font-weight: bold;
+  }
+  
+  /* Observations Styles */
+  .requisition-textarea {
+    width: 100%;
+    height: 100px;
+    padding: 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 5px;
+    resize: none;
+    font-size: 0.9rem;
+    color: #374151;
+  }
+  
+  .requisition-textarea::placeholder {
+    color: #9ca3af;
+  }
+  
+  /* Responsiveness */
+  @media (max-width: 768px) {
+    .requisition-header {
+      flex-direction: column;
+      text-align: center;
+    }
+  
+    .requisition-send-button {
+      margin-top: 1rem;
+    }
+  
+    .requisition-grid {
+      grid-template-columns: 1fr;
+    }
+
+  }
+
+  .requisition-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1.5rem; /* Más espacio entre los botones */
+    margin-top: 1rem;
+  }
+  
+  .requisition-cancel-button {
+    background-color: #ec3030;
+    color: white;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 8px; /* Bordes más suaves */
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+  }
+  
+  .requisition-cancel-button:hover {
+    background-color: #ec3030;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); /* Sombra más pronunciada */
+    transform: translateY(-2px); /* Efecto de elevación */
+  }
+  
+  .requisition-save-button {
+    background-color: #10b981;
+    color: white;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 8px; /* Bordes más suaves */
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+  }
+  
+  .requisition-save-button:hover {
+    background-color: #059669;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); /* Sombra más pronunciada */
+    transform: translateY(-2px); /* Efecto de elevación */
+  }
+  
+  
+ /* tabla de piezas */
+
+
+  .requisition-pieces-status {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    margin-top: 1.5rem;
+  }
+  
+  .requisition-pieces-column {
+    flex: 1;
+    background-color: #f9fafb;
+    padding: 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .requisition-pieces-column h3 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #374151;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 0.5rem;
+  }
+  
+  .requisition-pieces-column p {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+  
+
+  /* Estilos para los inputs dentro de las tablas */
+.requisition-table input {
+  width: 100%;
+  padding: 0.7rem;
+  border: 1px solid #b0b3b8;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: #374151;
+  background-color: #ffffff;
+  text-align: center;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
+}
+
+.requisition-table input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 10px rgba(37, 99, 235, 0.5);
+  transform: scale(1.02);
+}
+
+.requisition-table td {
+  padding: 0.7rem;
+}
+
+/* Estilos para el input de Número de Proyecto */
+.requisition-project-number {
+  width: 100%;
+  padding: 0.7rem;
+  border: 1px solid #b0b3b8;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: #374151;
+  background-color: #ffffff;
+  text-align: center;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
+}
+
+.requisition-project-number:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 10px rgba(37, 99, 235, 0.5);
+  transform: scale(1.02);
+}
+
+@media (max-width: 768px) {
+  .requisition-input {
+    font-size: 0.9rem;
+    padding: 0.6rem;
+  }
+  .requisition-project-number {
+    font-size: 0.9rem;
+    padding: 0.6rem;
+  }
+}
+
+/* Estilos para los inputs dentro del grid */
+.requisition-grid-item input {
+  width: 100%;
+  padding: 0.7rem;
+  border: 1px solid #b0b3b8;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: #374151;
+  background-color: #ffffff;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
+}
+
+.requisition-grid-item input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 10px rgba(37, 99, 235, 0.5);
+  transform: scale(1.02);
+}
+
+.add-item-button {
+  margin-top: 10px;
+  padding: 8px 12px;
+  font-size: 14px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.add-item-button:hover {
+  background-color: #0056b3;
+}
+
+/* 🎨 Botón "Eliminar" */
+.remove-item-button {
+  background-color: #ff4d4d; /* Rojo para indicar eliminación */
+  color: white; /* Texto blanco */
+  border: none; /* Sin borde */
+  padding: 6px 12px; /* Espaciado interno */
+  font-size: 14px; /* Tamaño de fuente */
+  font-weight: bold; /* Negrita */
+  cursor: pointer; /* Cursor tipo mano */
+  border-radius: 5px; /* Bordes redondeados */
+  transition: background-color 0.3s ease-in-out;
+}
+
+/* 🖱️ Cambiar color al pasar el mouse */
+.remove-item-button:hover {
+  background-color: #cc0000;
+}
+
+/* ❌ Efecto cuando el botón está presionado */
+.remove-item-button:active {
+  background-color: #990000;
+}
+
+
+/* 🎨 Estilo para la lista desplegable de piezas */
+.suggestions {
+  position: absolute;  /* Para que flote sobre otros elementos */
+  background-color: white;  /* Fondo blanco */
+  border: 1px solid #ddd;  /* Borde ligero */
+  border-radius: 5px;  /* Bordes redondeados */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
+  width: 100%; /* Que ocupe todo el ancho del input */
+  max-height: 200px; /* Altura máxima para evitar que sea muy grande */
+  overflow-y: auto; /* Agregar scroll si hay muchas opciones */
+  list-style: none; /* Eliminar viñetas */
+  padding: 0;
+  margin: 0;
+  z-index: 10; /* Para que no se esconda detrás de otros elementos */
+}
+
+/* 📌 Estilo para cada opción del dropdown */
+/* 🎨 Mejoras en el dropdown de piezas */
+.suggestions {
+  position: absolute;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+  width: calc(100% - 2px);  /* Se ajusta al input */
+  max-height: 250px;
+  overflow-y: auto;
+  list-style: none;
+  padding: 5px 0;
+  margin: 4px 0 0 0;
+  z-index: 100;
+  white-space: nowrap;  /* Para evitar que las opciones se rompan en varias líneas */
+}
+
+/* 📌 Estilo de cada opción */
+.suggestions li {
+  padding: 10px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  border-radius: 4px;
+}
+
+/* 🖱️ Efecto al pasar el mouse */
+.suggestions li:hover {
+  background-color: #f5f5f5;
+}
+
+/* 📝 Mejorar el espaciado entre opciones */
+.suggestions li:not(:last-child) {
+  border-bottom: 1px solid #eee;
+}
+
+/* 📏 Ajustar cuando hay muchas opciones */
+.suggestions::-webkit-scrollbar {
+  width: 6px;
+}
+
+.suggestions::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 3px;
+}
+
+/* 📌 Mensaje cuando no hay resultados */
+.no-results {
+  padding: 12px;
+  font-size: 14px;
+  color: #888;
+  text-align: center;
+}
+
+
+/* 🔹 Mejora el diseño del dropdown de unidad de medida */
+.custom-dropdown {
+  appearance: none; /* Quita el diseño nativo del sistema */
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* 🔹 Cambia el cursor y el color al pasar el mouse */
+.custom-dropdown:hover {
+  border-color: #007bff;
+}
+
+/* 🔹 Mejora la apariencia cuando está enfocado */
+.custom-dropdown:focus {
+  border-color: #0056b3;
+  box-shadow: 0 0 5px rgba(0, 91, 187, 0.5);
+  outline: none;
+}
+
+.dropdown-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.custom-dropdown {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  appearance: none; /* Oculta el estilo nativo */
+  background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'><path fill='black' d='M2 0L0 2h4z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 10px;
+}
+
+
+/* 🔹 Estilo del input de Número de Proyecto */
+.project-number-input {
+  width: 100%;
+  max-width: 300px;  /* Ajusta el ancho según tu diseño */
+  padding: 10px;
+  font-size: 14px;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  color: #333;
+  transition: all 0.3s ease;
+}
+
+/* 🔹 Cambios al pasar el mouse */
+.project-number-input:hover {
+  border-color: #007bff;
+}
+
+/* 🔹 Cambios cuando está enfocado */
+.project-number-input:focus {
+  border-color: #0056b3;
+  box-shadow: 0 0 5px rgba(0, 91, 187, 0.5);
+  outline: none;
+}
+

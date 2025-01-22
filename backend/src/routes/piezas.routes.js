@@ -27,7 +27,7 @@ router.get('/', async (req, res) => {
 // Ej: GET /api/piezas/with-stock
 // Retorna { ID_Pieza, Descripcion, Marca, stockLibre }
 router.get('/with-stock', async (req, res) => {
-    console.log("Entró a /with-stock sin problemas");
+    //console.log("Entró a /with-stock sin problemas");
 
     try {
       const query = `
@@ -82,33 +82,47 @@ router.get('/bajo-stock', async (req, res) => {
 // 3. Buscar piezas similares
 //    Ya no buscamos Stock_Actual ni Ubicacion
 //------------------------------------------------------
+// Ruta existente:
 router.get('/similares', async (req, res) => {
-  const { ID_Pieza, descripcion, marca } = req.query;
+  const { ID_Pieza, descripcion, marca, q } = req.query;
 
   try {
-    // Ajusta los campos a lo que tengas realmente en "piezas" ahora.
+    if (q) {
+      // Si hay `q`, filtrar por `Marca` o `Descripcion`
+      const sql = `
+        SELECT "ID_Pieza", "Descripcion", "Marca", "n_venta", "estado"
+        FROM piezas
+        WHERE "Marca" ILIKE $1 OR "Descripcion" ILIKE $1
+        LIMIT 20;
+      `;
+      const filter = `%${q}%`;
+      const result = await pool.query(sql, [filter]);
+      return res.status(200).json(result.rows);
+    }
+
+    // Lógica original para búsquedas específicas (sin q)
     const query = `
       SELECT "ID_Pieza", "Descripcion", "Marca", "n_venta", "estado"
       FROM piezas
-      WHERE
-        ($1::TEXT IS NULL OR "ID_Pieza"::TEXT = $1)
+      WHERE ($1::TEXT IS NULL OR "ID_Pieza"::TEXT = $1)
         AND ($2::TEXT IS NULL OR "Descripcion" ILIKE $2)
         AND ($3::TEXT IS NULL OR "Marca" ILIKE $3)
     `;
-
     const values = [
       ID_Pieza || null,
       descripcion ? `%${descripcion}%` : null,
       marca ? `%${marca}%` : null
     ];
-
     const result = await pool.query(query, values);
-    res.status(200).json(result.rows);
+    return res.status(200).json(result.rows);
+
   } catch (error) {
     console.error('Error en la consulta de piezas similares:', error);
     res.status(500).json({ error: 'Error al buscar piezas similares' });
   }
 });
+
+
 
 //------------------------------------------------------
 // 4. Obtener una pieza por ID

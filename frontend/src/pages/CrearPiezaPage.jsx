@@ -34,6 +34,10 @@ const CrearPiezaPage = () => {
 
   return (
     <div className="crear-pieza-page">
+      
+
+      <Header title="Crear Nueva Pieza" />
+
       {/* Botón para regresar a la lista de piezas */}
       <button
         className="back-button"
@@ -41,8 +45,6 @@ const CrearPiezaPage = () => {
       >
         Regresar a Piezas
       </button>
-
-      <Header title="Crear Nueva Pieza" />
 
       <div className="crear-pieza-card">
         <h2 className="crear-pieza-title">Datos de la Nueva Pieza</h2>

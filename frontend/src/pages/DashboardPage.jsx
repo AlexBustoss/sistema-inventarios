@@ -38,7 +38,7 @@ const DashboardPage = () => {
       id: 3,
       text: "Gestión de Requisiciones",
       icon: <FiFileText />,
-      onClick: () => navigate("/gestion-requisiciones"),
+      onClick: () => navigate("/home-requisiciones"),
     },
     {
       id: 4,

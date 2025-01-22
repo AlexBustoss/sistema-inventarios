@@ -1,0 +1,257 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f6f9;
+  }
+  
+  .requisition-container {
+    max-width: 90%;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Header Styles */
+  .requisition-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ffffff;
+    padding: 1rem 2rem;
+    border-bottom: 2px solid #d1d5db;
+    border-radius: 8px;
+  }
+  
+  .requisition-logo {
+    height: 60px;
+  }
+  
+  .requisition-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #374151;
+    margin: 0;
+  }
+  
+  .user-avatar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+    height: 50px;
+    background-color: #4f46e5;
+    color: #ffffff;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  
+  /* Search Bar Styles */
+  .requisition-search-section {
+    margin-top: 2rem;
+    text-align: center;
+  }
+  
+  .requisition-search-bar {
+    width: 50%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #374151;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .requisition-search-bar::placeholder {
+    color: #9ca3af;
+  }
+  
+  .requisition-search-bar:focus {
+    outline: none;
+    border-color: #4f46e5;
+    box-shadow: 0 0 8px rgba(79, 70, 229, 0.4);
+  }
+  
+  /* Table Section */
+  .requisition-table-section {
+    margin-top: 2rem;
+  }
+  
+  .requisition-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+  }
+  
+  .requisition-table th,
+  .requisition-table td {
+    border: 1px solid #e5e7eb;
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-size: 1rem;
+  }
+  
+  .requisition-table th {
+    background-color: #f9fafb;
+    color: #374151;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+  }
+  
+  .requisition-row:nth-child(even) {
+    background-color: #f9fafb;
+  }
+  
+  .requisition-row:hover {
+    background-color: #e5e7eb;
+  }
+  
+  .requisition-status {
+    text-align: center;
+    padding: 0.5rem;
+    border-radius: 4px;
+    font-weight: bold;
+  }
+  
+  .status-pending {
+    background-color: #fef3c7;
+    color: #b45309;
+  }
+  
+  .status-processed {
+    background-color: #d1fae5;
+    color: #065f46;
+  }
+  
+  /* Button Styles */
+  .requisition-actions button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .requisition-edit-button {
+    background-color: #fcd34d;
+    color: #92400e;
+    margin-right: 0.5rem;
+  }
+  
+  .requisition-edit-button:hover {
+    background-color: #fbbf24;
+    transform: scale(1.05);
+  }
+  
+  .requisition-delete-button {
+    background-color: #f87171;
+    color: #ffffff;
+  }
+  
+  .requisition-delete-button:hover {
+    background-color: #ef4444;
+    transform: scale(1.05);
+  }
+  
+  /* Add Button Styles */
+  .requisition-add-section {
+    margin-top: 2rem;
+    text-align: center;
+  }
+  
+  .requisition-add-button {
+    background-color: #10b981;
+    color: #ffffff;
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, box-shadow 0.2s ease;
+  }
+  
+  .requisition-add-button:hover {
+    background-color: #059669;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Responsiveness */
+  @media (max-width: 768px) {
+    .requisition-search-bar {
+      width: 80%;
+    }
+  
+    .requisition-actions button {
+      padding: 0.5rem;
+      font-size: 0.8rem;
+    }
+  
+    .requisition-add-button {
+      font-size: 1rem;
+      padding: 0.75rem 1.5rem;
+    }
+  }
+  
+
+  /* Contenedor de la tabla con scroll */
+.table-container {
+  max-height: 400px; /* Ajusta la altura según sea necesario */
+  overflow-y: auto;
+  overflow-x: hidden;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 5px;
+  position: relative;
+}
+
+/* Asegurar que la tabla ocupe el ancho completo */
+.requisition-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* Fijar el encabezado de la tabla correctamente */
+.requisition-table thead {
+  display: table;
+  width: 100%;
+  table-layout: fixed; /* Asegurar que las columnas se mantengan alineadas */
+  position: sticky;
+  top: 0;
+  background: #ffffff;
+  z-index: 100; /* Mayor z-index para que siempre esté sobre las filas */
+}
+
+/* Evita que los `th` se desplacen cuando haces scroll */
+.requisition-table thead th {
+  padding: 1rem;
+  font-weight: bold;
+  text-align: left;
+  background-color: #f4f6f9;
+  border-bottom: 2px solid #d1d5db;
+  position: sticky;
+  top: 0;
+  z-index: 101; /* Asegura que los encabezados no se oculten */
+}
+
+/* Asegurar que tbody no afecta el sticky */
+.requisition-table tbody {
+  display: block;
+  width: 100%;
+  overflow-y: auto;
+  max-height: 360px; /* Ajusta según necesidad */
+}
+
+.requisition-table tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed; /* Mantiene alineadas las celdas */
+}
