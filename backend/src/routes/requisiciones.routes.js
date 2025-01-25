@@ -96,8 +96,15 @@ router.post('/', async (req, res) => {
 
       return res.status(400).json({ error: 'Faltan campos obligatorios' });
     }
-  
+    
     try {
+      // 🔹 Verificar si el id_proyecto existe en la tabla proyectos antes de insertar la requisición
+      const queryProyecto = `SELECT COUNT(*) FROM proyectos WHERE id_proyecto = $1;`;
+      const proyectoExiste = await pool.query(queryProyecto, [id_proyecto]);
+
+      if (proyectoExiste.rows[0].count == 0) {
+        return res.status(400).json({ error: 'El id_proyecto no existe en la base de datos.' });
+      }
       // Ajusta las columnas y el orden de VALUES para que coincidan EXACTO con tu tabla "requisiciones"
       const query = `
         INSERT INTO requisiciones (
@@ -122,7 +129,7 @@ router.post('/', async (req, res) => {
           "Extension",
           "id_proyecto",
           "No_Requisicion",
-          "estado"          -- <--- aquí guardas el estatus (Pendiente, etc.)
+          "estado"
         )
         VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
                $11, $12, $13, $14, $15, $16, $17, $18, $19,

@@ -56,8 +56,8 @@ router.get('/:idRequisicion', async (req, res) => {
 router.post('/', async (req, res) => {
   const {
     ID_Requisicion,
-    ID_Pieza,        
-    ID_Unidad,       
+    ID_Pieza,
+    ID_Unidad,
     Cantidad_Solicitada,
     id_proyecto,
     Marca,
@@ -67,50 +67,91 @@ router.post('/', async (req, res) => {
     Fecha_Entrega
   } = req.body;
 
-  // Valida lo mínimo
-  if (!ID_Requisicion || !Cantidad_Solicitada) {
-    return res.status(400).json({
-      error: 'Faltan campos obligatorios: ID_Requisicion y Cantidad_Solicitada'
-    });
+  console.log("📥 Datos recibidos en el backend:", req.body);
+
+  // Validación de los campos obligatorios
+  if (!ID_Requisicion || !Cantidad_Solicitada || !ID_Pieza) {
+    return res.status(400).json({ error: 'Faltan campos obligatorios' });
   }
   if (Cantidad_Solicitada <= 0) {
     return res.status(400).json({ error: 'La cantidad solicitada debe ser mayor a 0' });
   }
 
   try {
-    const query = `
-  INSERT INTO detalle_requisiciones (
-    "ID_Requisicion",
-    "ID_Pieza",
-    "ID_Unidad",
-    "Cantidad_Solicitada",
-    "id_proyecto",
-    "Marca",
-    "No_Parte",
-    "Descripcion",
-    "Cantidad_Entregada",
-    "Fecha_Entrega"
-  ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-  RETURNING *;
-`;
-const values = [
-  ID_Requisicion,
-  ID_Pieza || null,
-  ID_Unidad || null,
-  Cantidad_Solicitada,
-  id_proyecto || null,
-  Marca || null,
-  No_Parte || null,
-  Descripcion || null,
-  Cantidad_Entregada || null,
-  Fecha_Entrega || null
-];
+    // 🔹 1. Insertar en detalle_requisiciones
+    const queryDetalle = `
+      INSERT INTO detalle_requisiciones (
+        "ID_Requisicion",
+        "ID_Pieza",
+        "ID_Unidad",
+        "Cantidad_Solicitada",
+        "id_proyecto",
+        "Marca",
+        "No_Parte",
+        "Descripcion",
+        "Cantidad_Entregada",
+        "Fecha_Entrega"
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      RETURNING *;
+    `;
+
+    const valuesDetalle = [
+      ID_Requisicion,
+      ID_Pieza,
+      ID_Unidad || null,
+      Cantidad_Solicitada,
+      id_proyecto || null,
+      Marca || "SIN MARCA",
+      No_Parte || "SIN NÚMERO DE PARTE",
+      Descripcion || "SIN DESCRIPCIÓN",
+      Cantidad_Entregada || 0,
+      Fecha_Entrega || null
+    ];
+
+    const resultDetalle = await pool.query(queryDetalle, valuesDetalle);
+    console.log("✅ Detalle registrado:", resultDetalle.rows[0]);
+
+    // 🔹 2. Revisar stock disponible
+    const stockDisponibleQuery = `
+      SELECT SUM(cantidad) AS total_disponible FROM stock_detallado 
+      WHERE id_pieza = $1 AND id_proyecto IS NULL;
+    `;
+    const stockDisponibleRes = await pool.query(stockDisponibleQuery, [ID_Pieza]);
+    const stockDisponible = stockDisponibleRes.rows[0].total_disponible || 0;
+
+    console.log(`📦 Stock libre disponible para la pieza ${ID_Pieza}:`, stockDisponible);
+
+    // 🔹 3. Si hay stock suficiente, asignarlo al proyecto
+    if (stockDisponible >= Cantidad_Solicitada) {
+      const asignarStockQuery = `
+          WITH piezas_actualizadas AS (
+              SELECT id_stock FROM stock_detallado
+              WHERE id_pieza = $1 AND id_proyecto IS NULL
+              LIMIT $2
+          )
+          UPDATE stock_detallado
+          SET id_proyecto = $3, estado = 'asignada', "ID_Requisicion" = $4
+          WHERE id_stock IN (SELECT id_stock FROM piezas_actualizadas);
+
+      `;
+      await pool.query(asignarStockQuery, [ID_Pieza, Cantidad_Solicitada, id_proyecto, ID_Requisicion]);
+      console.log("🔹 Stock asignado al proyecto", id_proyecto);
 
 
-    const result = await pool.query(query, values);
-    res.status(201).json(result.rows[0]);
+      console.log("🔹 Stock asignado al proyecto", id_proyecto);
+    } if (stockDisponible < Cantidad_Solicitada) {
+      console.log("⚠️ Stock insuficiente, se mantiene en estado 'Pendiente'.");
+      return res.status(201).json({
+        detalle: resultDetalle.rows[0],
+        pendientes: true, // <-- Notificación al frontend de que faltan piezas
+        mensaje: `Stock insuficiente para la pieza ${ID_Pieza}.`
+      });
+    }
+    
+
+    res.status(201).json(resultDetalle.rows[0]);
   } catch (error) {
-    console.error('Error al crear detalle:', error);
+    console.error("❌ Error al crear detalle:", error);
     res.status(500).json({ error: 'Error al crear detalle' });
   }
 });

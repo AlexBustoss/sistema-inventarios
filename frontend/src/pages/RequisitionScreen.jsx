@@ -43,12 +43,12 @@ const RequisitionScreen = () => {
   const handleSelectPieza = (index, pieza) => {
     const updated = [...formData.items];
     updated[index].ID_Pieza = pieza.ID_Pieza;
-    updated[index].brand = pieza.Marca;
-    updated[index].description = pieza.Descripcion;
+    updated[index].Marca = pieza.Marca;
+    updated[index].Descripcion = pieza.Descripcion;
   
     setFormData({ ...formData, items: updated });
   
-    // 🔥 Borra las sugerencias solo de la fila seleccionada
+    //Borra las sugerencias solo de la fila seleccionada
     setSugerenciasPorFila((prev) => ({ ...prev, [index]: [] }));
   
     console.log("🔍 Pieza seleccionada en índice", index, ":", updated[index]);
@@ -80,29 +80,11 @@ const RequisitionScreen = () => {
       {
         ID_Pieza: null,         // Aquí se guardará el ID de la pieza seleccionada
         ID_Unidad: null,        // Aquí se guardará el ID de la unidad seleccionada
-        Cantidad_Solicitada: "", // Para capturar la cantidad que solicita el usuario
-        brand: "",              // Solo para mostrar en la UI
-        description: "",        // Solo para mostrar en la UI
-        delivered: "",          // Cantidad entregada (si se usa)
-        deliveryDate: ""        // Fecha de entrega (si se usa)
-      },
-      {
-        ID_Pieza: null,
-        ID_Unidad: null,
-        Cantidad_Solicitada: "",
-        brand: "",
-        description: "",
-        delivered: "",
-        deliveryDate: ""
-      },
-      {
-        ID_Pieza: null,
-        ID_Unidad: null,
-        Cantidad_Solicitada: "",
-        brand: "",
-        description: "",
-        delivered: "",
-        deliveryDate: ""
+        Cantidad_Solicitada: "1", // Para capturar la cantidad que solicita el usuario
+        Marca: "",              // Solo para mostrar en la UI
+        Descripcion: "",        // Solo para mostrar en la UI
+        Cantidad_Entregada: "",          // Cantidad entregada (si se usa)
+        Fecha_Entrega: ""        // Fecha de entrega (si se usa)
       }
     ],
     
@@ -110,33 +92,35 @@ const RequisitionScreen = () => {
     // Ejemplo de "Autorización"
     authorization: [
       { signature: "", name: "", position: "" },
-      { signature: "", name: "", position: "" },
-      { signature: "", name: "", position: "" }
     ]
   });
 
   // Manejar cambios en los inputs
   const handleChange = (e, section, index, field) => {
     const { name, value } = e.target;
-
+  
     if (section === "items") {
       const updatedItems = [...formData.items];
       updatedItems[index][field] = value;
       setFormData({ ...formData, items: updatedItems });
+      console.log(`📝 Cambió el campo "${field}" en la fila ${index}:`, value);
     } else if (section === "authorization") {
       const updatedAuth = [...formData.authorization];
       updatedAuth[index][field] = value;
       setFormData({ ...formData, authorization: updatedAuth });
     } else {
-      setFormData({ ...formData, [name]: value });
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+      console.log(`📝 Cambió el campo "${name}" en datos generales:`, value);
     }
   };
-
+  
   // Manejar el click del botón "Mandar Requisición"
   const handleSubmit = async () => {
     try {
       // 1) Crear la requisición (cabecera) en /api/requisiciones
-      // Ajusta los nombres de columnas según tu BD
       const bodyRequisicion = {
         No_Requisicion: formData.requisitionNumber,
         Fecha: formData.date,
@@ -155,36 +139,39 @@ const RequisitionScreen = () => {
       
       const resp = await axios.post("/api/requisiciones", bodyRequisicion);
       const newReqId = resp.data.ID_Requisicion;
-      console.log("Requisición creada:", resp.data);
-
+      console.log("📤 Requisición creada:", resp.data);
+  
       // 2) Insertar cada item en /api/detalleRequisiciones
-      //    usando el ID_Requisicion que nos devolvió el backend
       console.log("📤 Enviando los siguientes items:", formData.items);
-
+  
       for (const item of formData.items) {
-        // Ajusta los nombres según tus columnas en detalle_requisiciones
         const bodyDetalle = {
           ID_Requisicion: newReqId,
           ID_Pieza: parseInt(item.ID_Pieza, 10),
           ID_Unidad: parseInt(item.ID_Unidad, 10),
           Cantidad_Solicitada: parseInt(item.Cantidad_Solicitada, 10) || 0,
-          id_proyecto: parseInt(formData.projectNumber, 10) || null  // ← Agregar esto
-
+          id_proyecto: parseInt(formData.projectNumber, 10) || null,
+          Marca: item.Marca && item.Marca.trim() !== "" ? item.Marca : "SIN MARCA",
+          No_Parte: item.No_Parte && item.No_Parte.trim() !== "" ? item.No_Parte : "SIN NÚMERO DE PARTE",
+          Descripcion: item.Descripcion && item.Descripcion.trim() !== "" ? item.Descripcion : "SIN DESCRIPCIÓN",
+          Cantidad_Entregada: parseInt(item.Cantidad_Entregada, 10) || 0,
+          Fecha_Entrega: item.Fecha_Entrega && item.Fecha_Entrega.trim() !== "" ? item.Fecha_Entrega : null
         };
-        console.log("📦 Datos enviados al backend:", bodyDetalle); // <--- Agregar esto
-
+  
+        console.log("📦 Datos enviados al backend:", bodyDetalle);
+  
         const respDetalle = await axios.post("/api/detalle_requisiciones", bodyDetalle);
-        console.log("Detalle creado:", respDetalle.data);
+        console.log("✅ Detalle creado:", respDetalle.data);
       }
-
+  
       alert("Requisición creada exitosamente.");
-      // Podrías navegar a la lista de requisiciones
       navigate("/home-requisiciones");
     } catch (error) {
-      console.error("Error al crear la requisición:", error);
+      console.error("❌ Error al crear la requisición:", error);
       alert("Ocurrió un error al crear la requisición. Revisa la consola.");
     }
   };
+  
 
   // Agrega una nueva fila vacía en formData.items
 const handleAddItem = () => {
@@ -192,10 +179,10 @@ const handleAddItem = () => {
     ID_Pieza: null,
     ID_Unidad: null,
     Cantidad_Solicitada: "",
-    brand: "",
-    description: "",
-    delivered: "",
-    deliveryDate: ""
+    Marca: "",
+    Descripcion: "",
+    Cantidad_Entregada: "",
+    Fecha_Entrega: ""
   };
   setFormData((prevForm) => ({
     ...prevForm,
@@ -242,8 +229,8 @@ const handleRemoveItem = (index) => {
             { label: "Fecha", key: "date", type: "date" },
             { label: "No. Requisición", key: "requisitionNumber" },
             { label: "Área / Departamento", key: "department" },
-            { label: "Nombre del responsable", key: "responsible" },
             { label: "Puesto", key: "position" },
+            { label: "Nombre del responsable", key: "responsible" },
             { label: "Calle y Número", key: "address" },
             { label: "Colonia", key: "colony" },
             { label: "Ciudad, Edo., y C.P.", key: "city" },
@@ -347,7 +334,7 @@ const handleRemoveItem = (index) => {
         <td>
           {item.ID_Pieza ? (
             <p>
-              {item.ID_Pieza} - {item.brand} ({item.description})
+              {item.ID_Pieza} - {item.Marca} ({item.Descripcion})
             </p>
           ) : (
             <p>No seleccionada</p>
@@ -359,8 +346,8 @@ const handleRemoveItem = (index) => {
           <input
             type="number"
             className="requisition-input"
-            value={item.delivered || ""}
-            onChange={(e) => handleChange(e, "items", index, "delivered")}
+            value={item.Cantidad_Entregada || ""}
+            onChange={(e) => handleChange(e, "items", index, "Cantidad_Entregada")}
             placeholder="Cantidad Entregada"
           />
         </td>
@@ -370,8 +357,8 @@ const handleRemoveItem = (index) => {
           <input
             type="date"
             className="requisition-input"
-            value={item.deliveryDate || ""}
-            onChange={(e) => handleChange(e, "items", index, "deliveryDate")}
+            value={item.Fecha_Entrega || ""}
+            onChange={(e) => handleChange(e, "items", index, "Fecha_Entrega")}
           />
         </td>
 
