@@ -1,11 +1,12 @@
-const pool = require('../config/db');
+const { getPool } = require('../config/db');
+const pool = getPool();
 
 // Obtener una requisición por ID
 const obtenerPorId = async (id) => {
     const query = `
         SELECT 
             "ID_Requisicion" AS "idRequisicion",
-            "Estado_Requisicion" AS "estadoRequisicion",
+            "estado" AS "estadoRequisicion",
             *
         FROM requisiciones
         WHERE "ID_Requisicion" = $1
@@ -14,14 +15,11 @@ const obtenerPorId = async (id) => {
     return rows[0];
 };
 
-
-
-
 // Actualizar el estado de una requisición
 const actualizarEstado = async (id, nuevoEstado) => {
     const query = `
         UPDATE requisiciones
-        SET "Estado_Requisicion" = $1
+        SET "estado" = $1
         WHERE "ID_Requisicion" = $2
         RETURNING *;
     `;

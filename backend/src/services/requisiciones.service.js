@@ -1,7 +1,11 @@
 // requisiciones.service.js
 
 const RequisicionesModel = require('../models/requisiciones.model');
-const pool = require('../config/db'); // Para hacer queries directos a la BD
+const { getPool } = require('../config/db');
+const pool = getPool();
+console.log("🌐 Pool activo en requisiciones.service.js:", pool);
+console.log("🌐 Métodos disponibles en pool:", Object.keys(pool || {}));
+console.log("🛠 ¿pool tiene query?:", typeof pool.query === "function"); // Debe imprimir true
 
 /**
  * Verifica si para cada ítem de `detalle_requisiciones` la suma en `stock_detallado`
@@ -9,49 +13,48 @@ const pool = require('../config/db'); // Para hacer queries directos a la BD
  * Devuelve true si todo OK, o false + info de qué falta.
  */
 async function verificarStockAsignado(idRequisicion) {
-  // 1. Obtener todos los renglones de detalle para esa requisición
+  // 1️⃣ Obtener detalles de la requisición con ID_Pieza y cantidad solicitada
   const detalleQuery = `
-    SELECT "ID_Detalle", "Cantidad_Solicitada", "ID_Detalle" 
-    FROM detalle_requisiciones
-    WHERE "ID_Requisicion" = $1
+    SELECT "ID_Pieza", "Cantidad_Solicitada", dr.id_proyecto
+    FROM detalle_requisiciones dr
+    INNER JOIN requisiciones r ON dr."ID_Requisicion" = r."ID_Requisicion"
+    WHERE dr."ID_Requisicion" = $1
   `;
-  const { rows: items } = await pool.query(detalleQuery, [idRequisicion]);
-
-  if (items.length === 0) {
-    // Si no hay ítems, consideramos que no hay nada que verificar
-    return { ok: true, faltantes: [] };
+  console.log("🔎 Verificando stock para requisición:", idRequisicion);
+  console.log("🔎 Usando pool:", pool);
+  console.log("🔎 Métodos disponibles en pool:", Object.keys(pool || {}));
+  
+  const { rows: detalles } = await pool.query(detalleQuery, [idRequisicion]);
+  
+  if (detalles.length === 0) {
+    return { ok: false, faltantes: [], error: "No hay detalles en esta requisición." };
   }
 
-  // 2. Para cada ítem, sumar en stock_detallado
-  //    la cantidad con estado='asignada', id_requisicion = X
-  //    y comparar con Cantidad_Solicitada
-  let todoOk = true;
-  const faltantes = [];
-
-  for (const item of items) {
-    const sumQuery = `
-      SELECT COALESCE(SUM(cantidad),0) AS total_asignado
+  // 2️⃣ Verificar stock asignado para cada pieza
+  let faltantes = [];
+  
+  for (const { ID_Pieza, Cantidad_Solicitada, id_proyecto } of detalles) {
+    const stockQuery = `
+      SELECT COALESCE(SUM(cantidad), 0) AS stock_asignado
       FROM stock_detallado
-      WHERE "ID_Requisicion" = $1
-        AND estado = 'asignada'
-        -- opcional: AND id_pieza=? si usaras ID_Pieza para matchear con item
+      WHERE id_pieza = $1 AND id_proyecto = $2 AND estado = 'asignada'
     `;
-    const { rows } = await pool.query(sumQuery, [idRequisicion]);
-    const totalAsignado = parseInt(rows[0].total_asignado, 10);
+    console.log("🔎 Verificando stock para requisición:", idRequisicion);
+  console.log("🔎 Usando pool:", pool);
+  console.log("🔎 Métodos disponibles en pool:", Object.keys(pool || {}));
 
-    if (totalAsignado < item.Cantidad_Solicitada) {
-      // Este ítem no está completamente asignado
-      todoOk = false;
-      faltantes.push({
-        idDetalle: item.ID_Detalle,
-        required: item.Cantidad_Solicitada,
-        assigned: totalAsignado
-      });
+    const { rows } = await pool.query(stockQuery, [ID_Pieza, id_proyecto]);
+
+    const stockAsignado = parseInt(rows[0].stock_asignado, 10);
+
+    if (stockAsignado < Cantidad_Solicitada) {
+      faltantes.push({ ID_Pieza, required: Cantidad_Solicitada, assigned: stockAsignado });
     }
   }
 
-  return { ok: todoOk, faltantes };
+  return faltantes.length === 0 ? { ok: true, faltantes: [] } : { ok: false, faltantes };
 }
+
 
 /**
  * Consumir stock: puede ser DELETE FROM stock_detallado or set estado='consumido'
@@ -61,11 +64,15 @@ async function consumirStock(idRequisicion) {
   const updateQuery = `
     UPDATE stock_detallado
     SET estado='consumido'
-    WHERE "ID_Requisicion" = $1
-      AND estado = 'asignada'
+    WHERE id_pieza IN (
+      SELECT "ID_Pieza" FROM detalle_requisiciones WHERE "ID_Requisicion" = $1
+    )
+    AND id_proyecto = (SELECT id_proyecto FROM requisiciones WHERE "ID_Requisicion" = $1)
+    AND estado = 'asignada'
   `;
   await pool.query(updateQuery, [idRequisicion]);
 }
+
 
 /**
  * Liberar stock: id_requisicion=NULL, id_proyecto=NULL, estado='libre'
@@ -84,61 +91,80 @@ async function liberarStock(idRequisicion) {
 // ===================
 
 const aceptarRequisicion = async (idRequisicion) => {
-  // 1. Verificar que la requisición existe
+  // 1️⃣ Verificar que la requisición existe
   const requisicion = await RequisicionesModel.obtenerPorId(idRequisicion);
   if (!requisicion) {
-    const error = new Error('Requisición no encontrada');
-    error.status = 404;
-    throw error;
+    throw new Error('Requisición no encontrada');
   }
 
-  // 2. Checar estado actual
-  if (!['Pendiente', 'Activa'].includes(requisicion.estadoRequisicion)) {
-    const error = new Error(`No se puede aceptar una requisición en estado ${requisicion.estadoRequisicion}`);
-    error.status = 400;
-    throw error;
+  // 2️⃣ Verificar que la requisición está en estado "Pendiente"
+  if (requisicion.estadoRequisicion !== 'Pendiente') {
+    throw new Error('Solo se pueden aceptar requisiciones en estado Pendiente');
   }
 
-  // 3. Verificar stock asignado
+  // 3️⃣ Validar stock asignado
   const { ok, faltantes } = await verificarStockAsignado(idRequisicion);
   if (!ok) {
-    const error = new Error('No hay suficiente stock asignado para todos los ítems');
-    error.status = 400;
-    error.detalle = faltantes;
-    throw error;
+    throw new Error(`Stock insuficiente para algunas piezas: ${JSON.stringify(faltantes)}`);
   }
 
-  // 4. Consumir el stock
+  // 4️⃣ Consumir stock
   await consumirStock(idRequisicion);
 
-  // 5. Actualizar el estado de la requisición a "Aceptada"
-  const resultado = await RequisicionesModel.actualizarEstado(idRequisicion, 'Aceptada');
-  return resultado; // Devuelve la requisición actualizada
+  // 5️⃣ Cambiar estado de la requisición a "Aceptada"
+  return await RequisicionesModel.actualizarEstado(idRequisicion, 'Aceptada');
 };
 
 
+
+
 const cancelarRequisicion = async (idRequisicion) => {
-  // 1. Obtener la requisición
-  const requisicion = await RequisicionesModel.obtenerPorId(idRequisicion);
-  if (!requisicion) {
-    const error = new Error('Requisición no encontrada');
-    error.status = 404;
-    throw error;
+  try {
+      // 1️⃣ Verificar si la requisición existe y su estado actual
+      const verificarRequisicionQuery = `
+          SELECT estado FROM requisiciones WHERE "ID_Requisicion" = $1;
+      `;
+      const { rows } = await pool.query(verificarRequisicionQuery, [idRequisicion]);
+
+      if (rows.length === 0) {
+          throw new Error('Requisición no encontrada.');
+      }
+
+      const estadoActual = rows[0].estado;
+
+      // 2️⃣ Si la requisición está en estado "Aceptada", revertir el stock
+      if (estadoActual === 'Aceptada') {
+          console.log("⚠️ Cancelando una requisición aceptada. Revirtiendo stock...");
+
+          const revertirStockQuery = `
+              UPDATE stock_detallado
+              SET estado = 'libre', "ID_Requisicion" = NULL, id_proyecto = NULL
+              WHERE "ID_Requisicion" = $1 AND estado = 'consumido';
+          `;
+          await pool.query(revertirStockQuery, [idRequisicion]);
+      } else {
+          // 3️⃣ Si la requisición aún no había sido aceptada, solo liberar stock asignado
+          const liberarStockQuery = `
+              UPDATE stock_detallado
+              SET estado = 'libre', "ID_Requisicion" = NULL, id_proyecto = NULL
+              WHERE "ID_Requisicion" = $1 AND estado = 'asignada';
+          `;
+          await pool.query(liberarStockQuery, [idRequisicion]);
+      }
+
+      // 4️⃣ Cambiar el estado de la requisición a "Cancelada"
+      const actualizarRequisicionQuery = `
+          UPDATE requisiciones SET estado = 'Cancelada' WHERE "ID_Requisicion" = $1;
+      `;
+      await pool.query(actualizarRequisicionQuery, [idRequisicion]);
+
+      console.log(`✅ Requisición ${idRequisicion} cancelada con éxito.`);
+      return { ok: true, message: 'Requisición cancelada y stock liberado.' };
+      
+  } catch (error) {
+      console.error("❌ Error al cancelar requisición:", error);
+      throw error;
   }
-
-  // 2. Validar estado actual
-  if (!['Pendiente', 'Activa', 'Aceptada'].includes(requisicion.estadoRequisicion)) {
-    const error = new Error(`No se puede cancelar una requisición en estado ${requisicion.estadoRequisicion}`);
-    error.status = 400;
-    throw error;
-  }
-
-  // 3. Liberar stock (estado='asignada') => 'libre'
-  await liberarStock(idRequisicion);
-
-  // 4. Actualizar la requisición a 'Cancelada'
-  const resultado = await RequisicionesModel.actualizarEstado(idRequisicion, 'Cancelada');
-  return resultado;
 };
 
 module.exports = {

@@ -2,30 +2,95 @@ const express = require('express');
 const router = express.Router();
 const { getPool } = require('../config/db'); // Importa getPool
 const pool = getPool(); // Obtén el pool inicializado
-
+const { aceptarRequisicion, cancelarRequisicion } = require('../controllers/requisiciones.controller');
+const RequisicionesController = require('../controllers/requisiciones.controller');
 
 
 // Aceptar una requisición
-router.put('/:id/aceptar', async (req, res, next) => {
-    const { id } = req.params;
+router.put('/:id/aceptar', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const resultado = await aceptarRequisicion(id);
+    res.status(200).json({ message: 'Requisición aceptada con éxito', resultado });
+  } catch (error) {
+    console.error("❌ Error al aceptar requisición:", error.message);
+    res.status(400).json({ error: error.message });
+  }
+});
+
+  // ============================
+  // Aceptar una requisición (lógica directamente en la ruta)
+  // ============================
+  router.put('/aceptar/:idRequisicion', async (req, res) => {
+    const { idRequisicion } = req.params;
+
     try {
-      const resultado = await require('../controllers/requisiciones.controller').aceptarRequisicion(id);
-      res.status(200).json({ message: 'Requisición aceptada exitosamente', resultado });
+        // 1️⃣ Verificar disponibilidad de stock
+        const verificarStockQuery = `
+            SELECT dr."ID_Pieza", dr."Cantidad_Solicitada", 
+                  COALESCE(SUM(sd.cantidad), 0) AS stock_asignado
+            FROM detalle_requisiciones dr
+            LEFT JOIN stock_detallado sd 
+                ON dr."ID_Pieza" = sd.id_pieza 
+                AND dr.id_proyecto = sd.id_proyecto 
+                AND sd.estado = 'asignada'
+            WHERE dr."ID_Requisicion" = $1
+            GROUP BY dr."ID_Pieza", dr."Cantidad_Solicitada";
+        `;
+
+        const stockCheck = await pool.query(verificarStockQuery, [idRequisicion]);
+
+        // 2️⃣ Revisar si hay piezas con stock insuficiente
+        const piezasFaltantes = stockCheck.rows.filter(pieza => pieza.stock_asignado < pieza.Cantidad_Solicitada);
+
+        if (piezasFaltantes.length > 0) {
+            console.log("⚠️ Stock insuficiente para aceptar la requisición:", piezasFaltantes);
+            return res.status(400).json({
+                error: 'Stock insuficiente para aceptar la requisición.',
+                piezasFaltantes
+            });
+        }
+
+        // 3️⃣ Si todas las piezas tienen stock suficiente, actualizar la requisición a "Aceptada"
+        const actualizarRequisicionQuery = `
+            UPDATE requisiciones 
+            SET estado = 'Aceptada' 
+            WHERE "ID_Requisicion" = $1;
+        `;
+        await pool.query(actualizarRequisicionQuery, [idRequisicion]);
+
+        // 4️⃣ Cambiar el estado de las piezas en stock_detallado a "consumido"
+        const consumirStockQuery = `
+            UPDATE stock_detallado
+            SET estado = 'consumido'
+            WHERE id_pieza IN (
+                SELECT "ID_Pieza" FROM detalle_requisiciones WHERE "ID_Requisicion" = $1
+            ) 
+            AND id_proyecto = (SELECT id_proyecto FROM requisiciones WHERE "ID_Requisicion" = $1)
+            AND estado = 'asignada';
+        `;
+
+        await pool.query(consumirStockQuery, [idRequisicion]);
+
+        console.log("✅ Requisición aceptada y stock actualizado:", idRequisicion);
+        res.status(200).json({ message: "Requisición aceptada con éxito." });
+
     } catch (error) {
-      next(error);
+        console.error("❌ Error al aceptar requisición:", error);
+        res.status(500).json({ error: 'Error al aceptar requisición.' });
     }
   });
 
 // Ruta para cancelar una requisición
 router.put('/:id/cancelar', async (req, res, next) => {
-    const { id } = req.params;
-    try {
-      const resultado = await require('../controllers/requisiciones.controller').cancelarRequisicion(id);
-      res.status(200).json({ message: 'Requisición cancelada exitosamente', resultado });
-    } catch (error) {
-      next(error);
-    }
-  });
+  try {
+    // Pasamos req, res (y next si lo necesitas)
+    await RequisicionesController.cancelarRequisicion(req, res, next);
+  } catch (error) {
+    next(error);
+  }
+});
 
 
 // Obtener todas las requisiciones, ordenadas por fecha descendente
