@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { initPool } = require('../config/db'); // Importar conexión a DB
+const StockController = require('../controllers/stock.controller');
 
 const pool = initPool(); // Inicializar conexión
 
@@ -86,5 +87,8 @@ router.get('/', async (req, res) => {
         res.status(500).json({ error: 'Hubo un problema al consultar el stock detallado.' });
     }
 });
+
+router.put('/reasignar', StockController.reasignarStock);
+
 
 module.exports = router;
