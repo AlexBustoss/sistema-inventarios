@@ -49,6 +49,7 @@ const unidadesMedidaRoutes = require('./routes/unidadesMedida.routes.js');
 const authRoutes = require('./routes/auth.routes.js');
 const comprasRoutes = require('./routes/compras.routes');
 const stockRoutes = require('./routes/stock_detallado.routes');
+const reportesRoutes = require('./routes/reportes.routes');
 
 
 // Registrar las rutas
@@ -67,6 +68,7 @@ app.use('/api/unidades_medida', unidadesMedidaRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/compras', comprasRoutes);
 app.use('/api/stock_detallado', stockRoutes);
+app.use('/api/reportes', reportesRoutes);
 
 
 // Ruta básica de prueba
