@@ -1,0 +1,40 @@
+.dashboard-container {
+    padding: 20px;
+  }
+  
+  .resumen-grid {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .tarjeta-resumen {
+    background: #f4f4f4;
+    padding: 15px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    text-align: center;
+  }
+  
+  .tarjeta-resumen .icono {
+    font-size: 2rem;
+  }
+  
+  .tabla-movimientos table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .tabla-movimientos th, .tabla-movimientos td {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+  }
+  
+  .tabla-movimientos th {
+    background: #f0f0f0;
+  }
+  

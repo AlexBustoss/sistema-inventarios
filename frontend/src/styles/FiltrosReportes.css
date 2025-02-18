@@ -1,0 +1,74 @@
+.filtros-container {
+    background: #fff;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+  }
+  
+  .filtros-titulo {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .filtros-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+  }
+  
+  .filtro-item {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .filtro-item label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 5px;
+  }
+  
+  .filtro-item input,
+  .filtro-item select {
+    padding: 8px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+  
+  .botones-container {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 15px;
+  }
+  
+  .boton-aplicar,
+  .boton-limpiar {
+    padding: 10px 16px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s ease-in-out;
+  }
+  
+  .boton-aplicar {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .boton-aplicar:hover {
+    background-color: #0056b3;
+  }
+  
+  .boton-limpiar {
+    background-color: #dc3545;
+    color: white;
+  }
+  
+  .boton-limpiar:hover {
+    background-color: #a71d2a;
+  }
+  

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Header from "../components/Dashboard/Header"; // ✅ Importamos el Header
 import "../styles/RequisitionHomeScreen.css";
 
 const GestionRequisiciones = () => {
   const navigate = useNavigate();
-
   const [requisiciones, setRequisiciones] = useState([]);
   const [busqueda, setBusqueda] = useState("");
 
@@ -42,37 +42,17 @@ const GestionRequisiciones = () => {
   // Filtrado en tiempo real
   const requisicionesFiltradas = requisiciones.filter((req) => {
     const texto = busqueda.toLowerCase();
-
-    // Convertir a string y minúsculas
     const idStr = req.ID_Requisicion
       ? req.ID_Requisicion.toString().toLowerCase()
       : "";
     const solicitante = (req.Nombre_Solicitante || "").toLowerCase();
-
-    // Ver si busqueda aparece en ID o en nombre solicitante
     return idStr.includes(texto) || solicitante.includes(texto);
   });
 
   return (
-    <div className="requisition-container">
-      <button
-        className="dashboard-back-button"
-        onClick={() => (window.location.href = "/dashboard")}
-      >
-        Regresar al Dashboard
-      </button>
-
-      <header className="requisition-header">
-        <img
-          src="/assets/images/CODETEC.png"
-          alt="Codetec Logo"
-          className="requisition-logo"
-        />
-        <h1 className="requisition-title">Gestión de Requisiciones</h1>
-        <div className="user-avatar" title="Perfil de Usuario">
-          <span className="user-initial">A</span>
-        </div>
-      </header>
+    <div className="requisition-container main-content">
+      {/* ✅ Header con botón de regreso */}
+      <Header title="Gestión de Requisiciones" showBackButton={true} backPath="/dashboard" />
 
       <section className="requisition-search-section">
         <h2 className="requisition-section-title">Buscar Requisiciones</h2>

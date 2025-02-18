@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../../styles/header.css";
+import "../../styles/header.css"; // Importar estilos
 
-const Header = ({ title, showBackButton = false }) => { // Nueva prop showBackButton
+const Header = ({ title, showBackButton = false, backPath = "/dashboard" }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -19,32 +19,33 @@ const Header = ({ title, showBackButton = false }) => { // Nueva prop showBackBu
   return (
     <header className="dashboard-header">
       <div className="header-content">
-        {/* Botón de regresar */}
+        {/* Botón de regresar (si está activado) */}
         {showBackButton && (
-          <button className="dashboard-back-button" onClick={() => navigate("/dashboard")}>
-            Regresar al Dashboard
+          <button className="back-button" onClick={() => navigate(backPath)}>
+            ← Regresar
           </button>
         )}
 
-        <img
-          src="/assets/images/CODETEC.png"
-          alt="Codetec Logo"
-          className="header-logo"
-        />
-        <h1 className="dashboard-title">{title}</h1> {/* Título dinámico */}
+        {/* Logo y título */}
+        <div className="header-main">
+          <img
+            src="/assets/images/CODETEC.png"
+            alt="Codetec Logo"
+            className="header-logo"
+          />
+          <h1 className="dashboard-title">{title}</h1>
+        </div>
+
         {/* Contenedor del avatar del usuario */}
         <div
           className="user-avatar-container"
-          onClick={() => setIsMenuOpen(!isMenuOpen)} // Cambia el estado del menú al hacer clic
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
         >
           <span className="user-initials">{userInitial}</span>
           {isMenuOpen && (
             <div className="user-menu">
               <p className="user-name">{userName}</p>
-              <button
-                className="logout-button"
-                onClick={handleLogout}
-              >
+              <button className="logout-button" onClick={handleLogout}>
                 Cerrar sesión
               </button>
             </div>

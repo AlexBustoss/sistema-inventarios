@@ -50,6 +50,7 @@ const authRoutes = require('./routes/auth.routes.js');
 const comprasRoutes = require('./routes/compras.routes');
 const stockRoutes = require('./routes/stock_detallado.routes');
 const reportesRoutes = require('./routes/reportes.routes');
+const proyectosRoutes = require('./routes/proyectos.routes');
 
 
 // Registrar las rutas
@@ -69,6 +70,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/compras', comprasRoutes);
 app.use('/api/stock_detallado', stockRoutes);
 app.use('/api/reportes', reportesRoutes);
+app.use('/api/proyectos', proyectosRoutes);
 
 
 // Ruta básica de prueba

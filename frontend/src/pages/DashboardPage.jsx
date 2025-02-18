@@ -80,7 +80,7 @@ const DashboardPage = () => {
   }, []);
 
   return (
-    <div className="dashboard-page">
+    <div className="dashboard-page main-content">
       {/* Header con título dinámico */}
       <Header title="Dashboard" />
       <div className="dashboard-metrics">

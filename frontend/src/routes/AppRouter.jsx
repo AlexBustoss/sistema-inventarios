@@ -8,6 +8,7 @@ import CrearPiezaPage from "../pages/CrearPiezaPage";
 import RequisicionesPage from "../pages/RequisitionScreen";
 import RequisitionEditScreen from "../pages/RequisitionEditScreen";
 import RequisitionHomeScreen from "../pages/RequisitionHomeScreen";
+import ReportesPage from "../pages/ReportesPage";
 
 
 const AppRouter = () => {
@@ -104,6 +105,16 @@ const AppRouter = () => {
         element={
           <PrivateRoute>
             <RequisitionHomeScreen />
+          </PrivateRoute>
+        }
+      />
+
+      {/* Nueva Ruta para reportes */}
+      <Route
+        path="/reportes"
+        element={
+          <PrivateRoute>
+            <ReportesPage />
           </PrivateRoute>
         }
       />

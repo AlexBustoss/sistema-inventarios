@@ -1,23 +1,18 @@
 .dashboard-header {
-  background-color: #f4f6f9;
-  padding: 1.5rem 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 2px solid #d1d5db;
   width: 100%;
-  height: 10vh;
-  z-index: 3; 
-  margin-top: 2rem;
-}
-
-.dashboard-title {
-  font-size: 2.5rem; /* Ajusta el tamaño de la fuente según sea necesario */
-  font-weight: bold;
-  color: #333;
-  text-align: center; /* Centra el texto horizontalmente */
-  width: 100%; /* Asegúrate de que ocupe todo el ancho */
-  margin-top: 1rem; /* Ajusta el margen superior si es necesario */
+  height: 60px;
+  background-color: #1e293b; /* Azul oscuro */
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .header-content {
@@ -27,112 +22,98 @@
   width: 100%;
 }
 
-.logo-container {
+.header-main {
   display: flex;
   align-items: center;
-  gap: 1.5rem; /* Aumentamos el espacio entre el logo y el título */
+  gap: 15px;
 }
 
 .header-logo {
-  width: 80px;
-  height: auto; /* Tamaño mayor para escritorio */
+  height: 40px;
 }
 
-.header-title h1 {
-  font-size: 2rem; /* Tamaño dinámico del texto */
+.dashboard-title {
+  font-size: 24px;
   font-weight: bold;
-  color: #374151;
+  color: #000000;  /* ⬅️ Asegura que sea un color visible (ej. blanco) */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); /* ⬅️ Sombra ligera para mejor legibilidad */
+}
+
+
+.back-button {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.back-button:hover {
+  background-color: #2563eb;
 }
 
 .user-avatar-container {
+  position: relative;
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 60px; /* Tamaño más grande para avatar */
-  height: 60px;
-  background-color: #4f46e5;
-  border-radius: 50%;
-  color: #fff;
-  font-size: 1.5rem;
-  font-weight: bold;
-  position: relative; /* Necesario para posicionar el menú */
-  cursor: pointer; /* Indicador de que es interactivo */
+  cursor: pointer;
 }
 
 .user-initials {
-  text-transform: uppercase;
+  background-color: #f59e0b;
+  color: white;
+  font-weight: bold;
+  padding: 10px;
+  border-radius: 50%;
+  text-align: center;
 }
 
-/* Estilos para el menú desplegable */
 .user-menu {
   position: absolute;
-  top: 70px; /* Ajusta para que quede debajo del avatar */
+  top: 50px;
   right: 0;
-  background-color: #ffffff;
+  background-color: white;
+  color: black;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
+  border-radius: 6px;
   overflow: hidden;
-  z-index: 10; /* Asegura que el menú esté sobre otros elementos */
-  width: 200px;
+  min-width: 150px;
 }
 
-.user-menu p.user-name {
-  margin: 0;
-  padding: 1rem;
-  font-size: 1rem;
-  color: #374151;
-  font-weight: bold;
-  border-bottom: 1px solid #e5e7eb;
+.user-menu p {
+  padding: 10px;
+  font-size: 14px;
+  border-bottom: 1px solid #ddd;
 }
 
-.user-menu button.logout-button {
+.logout-button {
   width: 100%;
-  padding: 1rem;
-  font-size: 1rem;
-  color: #ffffff;
-  background-color: #f87171; /* Color rojo para el botón */
+  background: none;
   border: none;
-  cursor: pointer;
+  padding: 10px;
   text-align: center;
+  cursor: pointer;
+  color: #ef4444;
   font-weight: bold;
 }
 
-.user-menu button.logout-button:hover {
-  background-color: #ef4444; /* Color más oscuro al pasar el mouse */
+.logout-button:hover {
+  background-color: #f8f8f8;
 }
 
-/* Estilos para tamaños pequeños */
-@media (max-width: 1024px) {
-  .dashboard-header {
-    height: 12vh; /* Mayor altura para pantallas medianas */
-  }
-
-  .header-title h1 {
-    font-size: 1.8rem;
-  }
-
-  .user-avatar-container {
-    width: 50px;
-    height: 50px;
-    font-size: 1.2rem;
-  }
-
-  .user-menu {
-    top: 60px; /* Ajusta para pantallas más pequeñas */
-  }
+.back-button {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-right: 10px;
 }
 
-/* Estilos para tamaños grandes */
-@media (min-width: 1440px) {
-  .dashboard-header {
-    height: 8vh; /* Reducimos un poco la altura en pantallas más grandes */
-  }
-
-  .header-logo {
-    width: 100px;
-  }
-
-  .header-title h1 {
-    font-size: 2.5rem;
-  }
+.back-button:hover {
+  background-color: #2563eb;
 }

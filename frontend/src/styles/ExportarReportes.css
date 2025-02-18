@@ -1,0 +1,30 @@
+.exportar-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 15px;
+  }
+  
+  .boton-exportar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s ease-in-out;
+    background-color: #28a745;
+    color: white;
+  }
+  
+  .boton-exportar:hover {
+    background-color: #218838;
+  }
+  
+  .icono-exportar {
+    width: 18px;
+    height: 18px;
+  }
+  

@@ -241,15 +241,9 @@ const ImportarPiezasPage = () => {
   };
 
   return (
-    <div className="importar-piezas-page">
-      <button
-        className="dashboard-back-button"
-        onClick={() => (window.location.href = "/dashboard")}
-      >
-        Regresar al Dashboard
-      </button>
+    <div className="importar-piezas-page main-content">
 
-      <Header title="Importar Piezas" />
+<Header title="Importar Piezas" showBackButton={true} backPath="/gestion-piezas" />
 
       <div className="importar-piezas-main">
         <div className="formulario-container">

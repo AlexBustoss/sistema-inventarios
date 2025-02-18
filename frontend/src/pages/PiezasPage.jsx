@@ -3,7 +3,7 @@ import Header from "../components/Dashboard/Header";
 import "../styles/PiezasPage.css";
 import PiezasTable from "../components/PiezasPage/PiezasTable";
 import NavigationButtons from "../components/Dashboard/NavigationButtons";
-import { getAllPiezas,  getPiezasWithStock} from "../services/piezasService";
+import { getPiezasWithStock } from "../services/piezasService";
 
 const PiezasPage = () => {
   const [piezas, setPiezas] = useState([]);
@@ -30,18 +30,10 @@ const PiezasPage = () => {
 
   return (
     <div>
-      {/* Botón para regresar al Dashboard */}
-      <button
-        className="dashboard-back-button"
-        onClick={() => (window.location.href = "/dashboard")}
-      >
-        Regresar al Dashboard
-      </button>
+      {/* Header con botón de regreso dinámico */}
+      <Header title="Gestión de Piezas" showBackButton={true} backPath="/dashboard" />
 
-      {/* Header */}
-      <Header title="Gestión de Piezas" />
-
-      <div className="piezas-page">
+      <div className="piezas-page main-content">
         {/* Tabla de piezas */}
         <PiezasTable piezas={piezas} setPiezas={setPiezas} />
 
@@ -50,13 +42,13 @@ const PiezasPage = () => {
           buttons={[
             {
               id: 1,
-              text: "Nueva Pieza",               // <--- Nuevo botón
+              text: "Nueva Pieza",
               onClick: () => (window.location.href = "/nueva-pieza"),
             },
             {
               id: 2,
               text: "Importar Piezas",
-              onClick: () => (window.location.href = "/importar-piezas"), // Navegación al ImportarPiezasPage
+              onClick: () => (window.location.href = "/importar-piezas"),
             },
           ]}
         />

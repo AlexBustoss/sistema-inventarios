@@ -1,0 +1,43 @@
+.tabla-movimientos-container {
+    margin: 20px 0;
+    background: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .tabla-movimientos {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+  
+  .tabla-movimientos th,
+  .tabla-movimientos td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: center;
+  }
+  
+  .tabla-movimientos th {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .tabla-movimientos tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .tabla-movimientos button {
+    padding: 6px 12px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .tabla-movimientos button:hover {
+    background-color: #218838;
+  }
+  

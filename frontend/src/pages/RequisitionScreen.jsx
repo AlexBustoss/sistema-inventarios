@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../styles/RequisitionScreen.css";
+import Header from "../components/Dashboard/Header";
 
 
 
@@ -201,24 +202,8 @@ const handleRemoveItem = (index) => {
 
   return (
     <div className="requisition-container">
-      <button
-        className="dashboard-back-button"
-        onClick={() => navigate("/home-requisiciones")}
-      >
-        Regresar a gestión requisición
-      </button>
+      <Header title="Agregar Requisición" showBackButton={true} backPath="/home-requisiciones" />
 
-      <header className="requisition-header">
-        <img
-          src="/assets/images/CODETEC.png"
-          alt="Codetec Logo"
-          className="requisition-logo"
-        />
-        <h1 className="requisition-title">Agregar Requisición</h1>
-        <button className="requisition-send-button" onClick={handleSubmit}>
-          Mandar Requisición
-        </button>
-      </header>
 
       {/* Datos de la requisición */}
       <section className="requisition-section">

@@ -33,18 +33,9 @@ const CrearPiezaPage = () => {
   };
 
   return (
-    <div className="crear-pieza-page">
-      
-
-      <Header title="Crear Nueva Pieza" />
-
-      {/* Botón para regresar a la lista de piezas */}
-      <button
-        className="back-button"
-        onClick={() => (window.location.href = "/piezas")}
-      >
-        Regresar a Piezas
-      </button>
+    <div className="crear-pieza-page main-content">
+      {/* ✅ Nuevo Header con botón de regreso */}
+      <Header title="Crear Nueva Pieza" showBackButton={true} backPath="/gestion-piezas" />
 
       <div className="crear-pieza-card">
         <h2 className="crear-pieza-title">Datos de la Nueva Pieza</h2>

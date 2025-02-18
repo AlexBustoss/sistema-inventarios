@@ -269,3 +269,8 @@ table tr:nth-child(even) {
     font-size: 1rem;
   }
 }
+
+.main-content {
+  margin-top: 80px; /* ⬅️ Agrega espacio debajo del Header */
+  padding: 20px;    /* ⬅️ Agrega un poco de margen en los lados */
+}
