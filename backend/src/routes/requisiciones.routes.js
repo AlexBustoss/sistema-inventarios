@@ -242,65 +242,63 @@ router.post('/', async (req, res) => {
 
 // Actualizar una requisición existente
 router.put('/:id', async (req, res) => {
-    const { id } = req.params; // ID de la requisición a actualizar
-    const {
-        Fecha,
-        ID_Estado,
-        Departamento,
-        Destino,
-        Notas,
-        Fecha_Entrega,
-        Nombre_Solicitante,
-        Puesto_Solicitante,
-        Firma_Solicitante,
-        Nombre_Aprobador,
-        Puesto_Aprobador,
-        Firma_Aprobador,
-        Calle_Numero,
-        Colonia,
-        Ciudad,
-        Estado,
-        Telefono,
-        Extension,
-        estado
-    } = req.body;
+  const { id } = req.params; // ID de la requisición a actualizar
+  const {
+      Fecha,
+      ID_Estado,
+      Departamento,
+      Destino,
+      Notas,
+      Fecha_Entrega,
+      Nombre_Solicitante,
+      Puesto_Solicitante,
+      Calle_Numero,
+      Colonia,
+      Ciudad,
+      Estado,
+      Telefono,
+      estado
+  } = req.body;
 
-    // Validar campos obligatorios
-    if (!Fecha || !ID_Estado || !Nombre_Solicitante || !Puesto_Solicitante || !estado) {
-        return res.status(400).json({ error: 'Faltan campos obligatorios.' });
-    }
+  // Validar campos obligatorios
+  if (!Fecha || !Nombre_Solicitante || !Puesto_Solicitante || !estado) {
+      console.error(`❌ Faltan campos obligatorios en la actualización de la requisición ${id}`);
+      return res.status(400).json({ error: 'Faltan campos obligatorios.' });
+  }
 
-    try {
-        const query = `
-            UPDATE requisiciones 
-            SET 
-                "Fecha" = $1, "ID_Estado" = $2, "Departamento" = $3, "Destino" = $4, 
-                "Notas" = $5, "Fecha_Entrega" = $6, "Nombre_Solicitante" = $7, 
-                "Puesto_Solicitante" = $8, "Firma_Solicitante" = $9, "Nombre_Aprobador" = $10, 
-                "Puesto_Aprobador" = $11, "Firma_Aprobador" = $12, "Calle_Numero" = $13, 
-                "Colonia" = $14, "Ciudad" = $15, "Estado" = $16, "Telefono" = $17, "Extension" = $18, "estado" = $19
-            WHERE "ID_Requisicion" = $20
-            RETURNING *;
-        `;
+  try {
+      const query = `
+          UPDATE requisiciones 
+          SET 
+              "Fecha" = $1, "ID_Estado" = $2, "Departamento" = $3, "Destino" = $4, 
+              "Notas" = $5, "Fecha_Entrega" = $6, "Nombre_Solicitante" = $7, 
+              "Puesto_Solicitante" = $8, "Calle_Numero" = $9, 
+              "Colonia" = $10, "Ciudad" = $11, "Estado" = $12, 
+              "Telefono" = $13, "estado" = $14
+          WHERE "ID_Requisicion" = $15
+          RETURNING *;
+      `;
 
-        const values = [
-            Fecha, ID_Estado, Departamento, Destino, Notas, Fecha_Entrega, Nombre_Solicitante,
-            Puesto_Solicitante, Firma_Solicitante, Nombre_Aprobador, Puesto_Aprobador,
-            Firma_Aprobador, Calle_Numero, Colonia, Ciudad, Estado,
-            Telefono, Extension, estado, id
-        ];
+      const values = [
+          Fecha, ID_Estado || 1, Departamento, Destino, Notas, Fecha_Entrega, Nombre_Solicitante,
+          Puesto_Solicitante, Calle_Numero, Colonia, Ciudad, Estado,
+          Telefono, estado, id
+      ];
 
-        const result = await pool.query(query, values);
+      const result = await pool.query(query, values);
 
-        if (result.rowCount === 0) {
-            return res.status(404).json({ error: 'Requisición no encontrada' });
-        }
+      if (result.rowCount === 0) {
+          console.log(`No se encontró la requisición con ID ${id}. No se actualizó nada.`);
+          return res.status(404).json({ error: 'Requisición no encontrada o sin cambios' });
+      }
 
-        res.status(200).json(result.rows[0]); // Retorna la requisición actualizada
-    } catch (error) {
-        console.error('Error al actualizar requisición:', error);
-        res.status(500).json({ error: 'Error al actualizar requisición' });
-    }
+      console.log(`✅ Requisición ${id} actualizada correctamente:`, result.rows[0]);
+      res.status(200).json(result.rows[0]);
+
+  } catch (error) {
+      console.error(`❌ Error al actualizar requisición ${id}:`, error);
+      res.status(500).json({ error: 'Error al actualizar requisición' });
+  }
 });
 
 
@@ -328,6 +326,74 @@ router.delete('/:id', async (req, res) => {
         console.error('Error al eliminar requisición:', error);
         res.status(500).json({ error: 'Error al eliminar requisición' });
     }
+});
+
+// Obtener los detalles de una requisición específica (las piezas solicitadas)
+router.get('/detalle/:idRequisicion', async (req, res) => {
+  const { idRequisicion } = req.params;
+  
+  try {
+      const query = `
+          SELECT dr.*, p."Descripcion", p."Marca", u."Nombre" AS Unidad
+          FROM detalle_requisiciones dr
+          LEFT JOIN piezas p ON dr."ID_Pieza" = p."ID_Pieza"
+          LEFT JOIN unidades_medida u ON dr."ID_Unidad" = u."ID_Unidad"
+          WHERE dr."ID_Requisicion" = $1;
+      `;
+
+      const result = await pool.query(query, [idRequisicion]);
+
+      if (result.rowCount === 0) {
+          return res.status(404).json({ error: 'No se encontraron detalles para esta requisición' });
+      }
+
+      res.status(200).json(result.rows);
+  } catch (error) {
+      console.error('Error al obtener los detalles de la requisición:', error);
+      res.status(500).json({ error: 'Error al obtener detalles de la requisición' });
+  }
+});
+
+
+// Actualizar una pieza específica de una requisición
+// Actualizar una pieza específica de una requisición
+router.put('/detalle/:idRequisicion/:idPieza', async (req, res) => {
+  const { idRequisicion, idPieza } = req.params;
+  let { ID_Unidad, Cantidad_Solicitada, Cantidad_Entregada, Fecha_Entrega } = req.body;
+
+  try {
+    // Convertir valores a números para evitar errores de tipo
+    ID_Unidad = ID_Unidad ? parseInt(ID_Unidad, 10) : null;
+    Cantidad_Solicitada = Cantidad_Solicitada ? parseInt(Cantidad_Solicitada, 10) : 0;
+    Cantidad_Entregada = Cantidad_Entregada ? parseInt(Cantidad_Entregada, 10) : 0;
+    Fecha_Entrega = Fecha_Entrega && Fecha_Entrega.trim() !== "" ? Fecha_Entrega : null;
+
+    const query = `
+      UPDATE detalle_requisiciones
+      SET "ID_Unidad" = $1,
+          "Cantidad_Solicitada" = $2,
+          "Cantidad_Entregada" = $3,
+          "Fecha_Entrega" = $4
+      WHERE "ID_Requisicion" = $5 AND "ID_Pieza" = $6
+      RETURNING *;
+    `;
+
+    const values = [ID_Unidad, Cantidad_Solicitada, Cantidad_Entregada, Fecha_Entrega, idRequisicion, idPieza];
+
+    const result = await pool.query(query, values);
+
+    if (result.rowCount === 0) {
+      console.log(`⚠️ No se encontró la pieza con ID ${idPieza} en la requisición ${idRequisicion}.`);
+      return res.status(404).json({ error: "Pieza no encontrada en la requisición" });
+    }
+
+    console.log(`✅ Pieza ${idPieza} en requisición ${idRequisicion} actualizada correctamente.`);
+    res.status(200).json({ message: "Pieza actualizada correctamente", pieza: result.rows[0] });
+
+  } catch (error) {
+    console.error(`❌ Error al actualizar la pieza en requisición ${idRequisicion}:`, error);
+    res.status(500).json({ error: "Error al actualizar la pieza en la requisición" });
+  }
 });
 
 

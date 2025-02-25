@@ -25,9 +25,10 @@ const GestionRequisiciones = () => {
   };
 
   // Editar
-  const handleEditar = (idRequisicion) => {
-    navigate(`/editar-requisicion/${idRequisicion}`);
-  };
+const handleEditar = (idRequisicion) => {
+  navigate(`/editar-requisicion/${idRequisicion}`);
+};
+
 
   // Eliminar
   const handleEliminar = async (idRequisicion) => {

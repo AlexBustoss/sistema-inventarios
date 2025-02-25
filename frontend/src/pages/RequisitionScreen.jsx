@@ -409,6 +409,13 @@ const handleRemoveItem = (index) => {
           </tbody>
         </table>
       </section>
+      {/* Botón para confirmar y enviar la requisición */}
+      <div className="requisition-buttons">
+        <button className="requisition-save-button" onClick={handleSubmit}>
+          Confirmar Requisición
+        </button>
+      </div>
+
     </div>
   );
 };

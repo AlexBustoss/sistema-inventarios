@@ -49,20 +49,21 @@ const InventoryTable = () => {
                 <td>
                   <span
                     className={`status-text ${
-                      item.Estado_Requisicion === "Pendiente"
+                      item.estado === "Pendiente"
                         ? "text-pending"
-                        : item.Estado_Requisicion === "Activa"
+                        : item.estado === "Activa"
                         ? "text-active"
-                        : item.Estado_Requisicion === "Aceptada"
+                        : item.estado === "Aceptada"
                         ? "text-accepted"
-                        : item.Estado_Requisicion === "Cancelada"
+                        : item.estado === "Cancelada"
                         ? "text-canceled"
                         : "text-other"
                     }`}
                   >
-                    {item.Estado_Requisicion}
+                    {item.estado}
                   </span>
                 </td>
+
                 <td>{item.Nombre_Solicitante || "No asignado"}</td>
               </tr>
             ))}

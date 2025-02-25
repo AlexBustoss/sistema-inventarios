@@ -91,13 +91,14 @@ const AppRouter = () => {
 
       {/* Nueva Ruta para editar de requisiciones */}
       <Route
-        path="/editar-requisicion"
+        path="/editar-requisicion/:id"
         element={
           <PrivateRoute>
             <RequisitionEditScreen />
           </PrivateRoute>
         }
       />
+
 
       {/* Nueva Ruta para home de requisiciones */}
       <Route

@@ -201,16 +201,8 @@ const PiezasTable = ({ piezas, setPiezas }) => {
                           onChange={handleChangeEdit}
                         />
                       </td>
-                      <td>
-                        <select
-                          name="estado"
-                          value={editingData.estado || "libre"}
-                          onChange={handleChangeEdit}
-                        >
-                          <option value="libre">libre</option>
-                          <option value="asignada">asignada</option>
-                        </select>
-                      </td>
+                      <td>{pieza.stockLibre ?? "n/a"}</td>
+
                       <td>
                         <button className="save-button" onClick={handleSaveEdit}>Guardar</button>
                         <button
