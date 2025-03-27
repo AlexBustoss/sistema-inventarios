@@ -255,3 +255,18 @@ body {
   width: 100%;
   table-layout: fixed; /* Mantiene alineadas las celdas */
 }
+
+.requisition-detail-button {
+  background-color: #3498db; /* Azul */
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  margin-right: 5px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.requisition-detail-button:hover {
+  background-color: #2980b9;
+}

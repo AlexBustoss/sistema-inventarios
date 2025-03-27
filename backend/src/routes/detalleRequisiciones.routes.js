@@ -266,4 +266,46 @@ router.delete('/:idDetalle', async (req, res) => {
 });
 
 
+// ✅ Nueva ruta: Actualizar entrega acumulada de una pieza
+router.put('/entregar/:idRequisicion/:idPieza', async (req, res) => {
+  const { idRequisicion, idPieza } = req.params;
+  const { cantidadEntregadaNueva, fechaEntrega } = req.body;
+  console.log("🧪 Body recibido:", req.body);
+  console.log("🧪 Cantidad:", cantidadEntregadaNueva);
+
+  if (!cantidadEntregadaNueva || isNaN(cantidadEntregadaNueva)) {
+    return res.status(400).json({ error: 'Cantidad entregada inválida' });
+  }
+
+  try {
+    // 1️⃣ Obtener la cantidad entregada actual
+    const consulta = await pool.query(
+      'SELECT "Cantidad_Entregada" FROM detalle_requisiciones WHERE "ID_Requisicion" = $1 AND "ID_Pieza" = $2',
+      [idRequisicion, idPieza]
+    );
+
+    if (consulta.rowCount === 0) {
+      return res.status(404).json({ error: 'Pieza no encontrada en esta requisición' });
+    }
+
+    const cantidadActual = consulta.rows[0].Cantidad_Entregada || 0;
+    const nuevaCantidadTotal = cantidadActual + parseInt(cantidadEntregadaNueva);
+
+    // 2️⃣ Actualizar la cantidad entregada (sumando)
+    const update = await pool.query(
+      `UPDATE detalle_requisiciones
+       SET "Cantidad_Entregada" = $1,
+           "Fecha_Entrega" = $2
+       WHERE "ID_Requisicion" = $3 AND "ID_Pieza" = $4
+       RETURNING *;`,
+      [nuevaCantidadTotal, fechaEntrega || null, idRequisicion, idPieza]
+    );
+
+    res.status(200).json({ message: 'Entrega actualizada correctamente', data: update.rows[0] });
+  } catch (error) {
+    console.error('❌ Error al entregar pieza:', error);
+    res.status(500).json({ error: 'Error al entregar pieza' });
+  }
+});
+
 module.exports = router;

@@ -9,6 +9,7 @@ import RequisicionesPage from "../pages/RequisitionScreen";
 import RequisitionEditScreen from "../pages/RequisitionEditScreen";
 import RequisitionHomeScreen from "../pages/RequisitionHomeScreen";
 import ReportesPage from "../pages/ReportesPage";
+import RequisitionDetailScreen from "../pages/RequisitionDetailScreen";
 
 
 const AppRouter = () => {
@@ -98,6 +99,17 @@ const AppRouter = () => {
           </PrivateRoute>
         }
       />
+
+      {/* Nueva Ruta para ver detalle de requisición */}
+        <Route
+          path="/detalle-requisicion/:id"
+          element={
+            <PrivateRoute>
+              <RequisitionDetailScreen />
+            </PrivateRoute>
+          }
+        />
+
 
 
       {/* Nueva Ruta para home de requisiciones */}

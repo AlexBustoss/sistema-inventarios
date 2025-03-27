@@ -29,6 +29,12 @@ const handleEditar = (idRequisicion) => {
   navigate(`/editar-requisicion/${idRequisicion}`);
 };
 
+// Ver Detalle
+const handleVerDetalle = (idRequisicion) => {
+  navigate(`/detalle-requisicion/${idRequisicion}`);
+};
+
+
 
   // Eliminar
   const handleEliminar = async (idRequisicion) => {
@@ -95,19 +101,26 @@ const handleEditar = (idRequisicion) => {
                     {req.Nombre_Solicitante || "—"}
                   </td>
                   <td className="requisition-actions">
-                    <button
-                      className="requisition-edit-button"
-                      onClick={() => handleEditar(req.ID_Requisicion)}
-                    >
-                      Editar
-                    </button>
-                    <button
-                      className="requisition-delete-button"
-                      onClick={() => handleEliminar(req.ID_Requisicion)}
-                    >
-                      Eliminar
-                    </button>
-                  </td>
+  <button
+    className="requisition-detail-button"
+    onClick={() => handleVerDetalle(req.ID_Requisicion)}
+  >
+    Ver Detalle
+  </button>
+  <button
+    className="requisition-edit-button"
+    onClick={() => handleEditar(req.ID_Requisicion)}
+  >
+    Editar
+  </button>
+  <button
+    className="requisition-delete-button"
+    onClick={() => handleEliminar(req.ID_Requisicion)}
+  >
+    Eliminar
+  </button>
+</td>
+
                 </tr>
               ))}
               {requisicionesFiltradas.length === 0 && (
