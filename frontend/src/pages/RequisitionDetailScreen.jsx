@@ -65,6 +65,20 @@ const RequisitionDetailScreen = () => {
         ...prev,
         items: detallesResponse.data,
       }));
+      
+      // Verificar si ya se completó todo y actualizar estado
+      try {
+        const verificar = await axios.put(`/api/requisiciones/${requisition.ID_Requisicion}/completar-si-entregada`);
+        if (verificar.data.completada) {
+          setRequisition((prev) => ({
+            ...prev,
+            estado: "Completada",
+          }));
+        }
+      } catch (err) {
+        console.error("⚠️ Error al verificar completitud:", err);
+      }
+      
   
       setToastMessage("✅ Entrega registrada correctamente");
       setShowModal(false);

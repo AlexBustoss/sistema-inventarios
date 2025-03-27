@@ -397,6 +397,40 @@ router.put('/detalle/:idRequisicion/:idPieza', async (req, res) => {
 });
 
 
+// Cambiar estado a 'Completada' si ya se entregaron todas las piezas
+router.put('/:id/completar-si-entregada', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // 1️⃣ Obtener las piezas de la requisición
+    const piezasQuery = `
+      SELECT "Cantidad_Solicitada", "Cantidad_Entregada"
+      FROM detalle_requisiciones
+      WHERE "ID_Requisicion" = $1
+    `;
+    const result = await pool.query(piezasQuery, [id]);
+
+    // 2️⃣ Verificar si todas las piezas han sido entregadas
+    const todasEntregadas = result.rows.every(p =>
+      p.Cantidad_Entregada >= p.Cantidad_Solicitada
+    );
+
+    if (!todasEntregadas) {
+      return res.status(200).json({ completada: false });
+    }
+
+    // 3️⃣ Actualizar el estado a 'Completada'
+    await pool.query(
+      `UPDATE requisiciones SET estado = 'Completada' WHERE "ID_Requisicion" = $1`,
+      [id]
+    );
+
+    res.status(200).json({ completada: true });
+  } catch (error) {
+    console.error("❌ Error al verificar estado completado:", error);
+    res.status(500).json({ error: 'Error al actualizar estado de requisición' });
+  }
+});
 
 
 
