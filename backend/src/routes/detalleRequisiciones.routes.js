@@ -17,6 +17,29 @@ router.get('/', async (req, res) => {
   }
 });
 
+// ✅ Ruta para consultar el historial de entregas de una pieza en una requisición
+router.get('/bitacora/:idRequisicion/:idPieza', async (req, res) => {
+  const { idRequisicion, idPieza } = req.params;
+
+  try {
+    const result = await pool.query(
+      `SELECT 
+          cantidad_entregada, 
+          fecha_entrega
+      FROM entregas_requisicion
+      WHERE id_requisicion = $1 AND id_pieza = $2
+      ORDER BY fecha_entrega ASC`
+,
+      [idRequisicion, idPieza]
+    );
+
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error("❌ Error al obtener bitácora de entregas:", error);
+    res.status(500).json({ error: 'Error al obtener bitácora de entregas' });
+  }
+});
+
 // ============================
 //  GET /api/detalleRequisiciones/:idRequisicion
 //  Obtiene todos los renglones de una requisición en particular
@@ -294,12 +317,21 @@ router.put('/entregar/:idRequisicion/:idPieza', async (req, res) => {
     // 2️⃣ Actualizar la cantidad entregada (sumando)
     const update = await pool.query(
       `UPDATE detalle_requisiciones
-       SET "Cantidad_Entregada" = $1,
-           "Fecha_Entrega" = $2
-       WHERE "ID_Requisicion" = $3 AND "ID_Pieza" = $4
-       RETURNING *;`,
+      SET "Cantidad_Entregada" = $1,
+          "Fecha_Entrega" = $2
+      WHERE "ID_Requisicion" = $3 AND "ID_Pieza" = $4
+      RETURNING *;`,
       [nuevaCantidadTotal, fechaEntrega || null, idRequisicion, idPieza]
     );
+    // Insertar en la bitácora
+    await pool.query(
+      `INSERT INTO entregas_requisicion 
+       (id_requisicion, id_pieza, cantidad_entregada, fecha_entrega)
+       VALUES ($1, $2, $3, $4);`,
+      [idRequisicion, idPieza, cantidadEntregadaNueva, fechaEntrega || null]
+    );
+    
+
 
     res.status(200).json({ message: 'Entrega actualizada correctamente', data: update.rows[0] });
   } catch (error) {
@@ -307,5 +339,8 @@ router.put('/entregar/:idRequisicion/:idPieza', async (req, res) => {
     res.status(500).json({ error: 'Error al entregar pieza' });
   }
 });
+
+
+
 
 module.exports = router;

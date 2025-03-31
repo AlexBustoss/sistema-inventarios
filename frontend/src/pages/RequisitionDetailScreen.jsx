@@ -16,6 +16,9 @@ const RequisitionDetailScreen = () => {
     cantidad: "",
     fecha: "",
   });
+  const [bitacoras, setBitacoras] = useState({});
+  const [filaExpandida, setFilaExpandida] = useState(null);
+
 
   useEffect(() => {
     const fetchRequisition = async () => {
@@ -81,6 +84,7 @@ const RequisitionDetailScreen = () => {
       
   
       setToastMessage("✅ Entrega registrada correctamente");
+      await toggleBitacora(selectedItem.ID_Pieza); // volver a cargar historial actualizado
       setShowModal(false);
   
       // Ocultar el toast después de 3 segundos
@@ -110,6 +114,24 @@ const calcularProgresoTotal = () => {
 
   if (loading) return <p>Cargando...</p>;
   if (!requisition) return <p>No se encontró la requisición.</p>;
+
+  const toggleBitacora = async (idPieza) => {
+    if (filaExpandida === idPieza) {
+      // Si ya está expandida, contraerla
+      setFilaExpandida(null);
+      return;
+    }
+  
+    try {
+      const resp = await axios.get(`/api/detalle_requisiciones/bitacora/${requisition.ID_Requisicion}/${idPieza}`);
+      setBitacoras((prev) => ({ ...prev, [idPieza]: resp.data }));
+      setFilaExpandida(idPieza);
+    } catch (error) {
+      console.error("❌ Error al obtener bitácora:", error);
+      alert("Error al cargar el historial de entregas.");
+    }
+  };
+  
 
   return (
     <div className="requisition-detail-container">
@@ -163,32 +185,65 @@ const calcularProgresoTotal = () => {
               <th>Fecha de Entrega</th>
               <th>Acciones</th>
               <th>Progreso</th>
+              <th>Historial</th>
             </tr>
           </thead>
           <tbody>
-            {requisition.items && requisition.items.map((item, index) => (
+  {requisition.items && requisition.items.map((item, index) => (
+    <React.Fragment key={index}>
+      <tr>
+        <td>{item.Descripcion}</td>
+        <td>{item.Marca}</td>
+        <td>{item.Cantidad_Solicitada}</td>
+        <td>{item.Cantidad_Entregada ?? 0}</td>
+        <td>{item.Fecha_Entrega ? new Date(item.Fecha_Entrega).toLocaleDateString() : "-"}</td>
+        <td>
+          <button className="entregar-button" onClick={() => openEntregaModal(item)}>
+            Entregar
+          </button>
+        </td>
+        <td>
+          <div className="progress-bar-container">
+            <div
+              className="progress-bar"
+              style={{ width: `${calcularProgresoPieza(item)}%` }}
+            ></div>
+          </div>
+        </td>
+        <td>
+        <button
+          className="historial-button"
+          onClick={() => toggleBitacora(item.ID_Pieza)}
+        >
+          {filaExpandida === item.ID_Pieza ? "Ocultar" : "Ver historial"}
+        </button>
+        </td>
+      </tr>
 
-              <tr key={index}>
-                <td>{item.Descripcion}</td>
-                <td>{item.Marca}</td>
-                <td>{item.Cantidad_Solicitada}</td>
-                <td>{item.Cantidad_Entregada ?? 0}</td>
-                <td>{item.Fecha_Entrega ? new Date(item.Fecha_Entrega).toLocaleDateString() : "-"}</td>
-                <td>
-                <button className="entregar-button" onClick={() => openEntregaModal(item)}>Entregar</button>
-                </td>
-                <td>
-                <div className="progress-bar-container">
-                    <div
-                    className="progress-bar"
-                    style={{ width: `${calcularProgresoPieza(item)}%` }}
-                    ></div>
-                </div>
-                </td>
+      {/* Fila extra solo si está expandida */}
+      {filaExpandida === item.ID_Pieza && (
+        <tr className="bitacora-row">
+          <td colSpan="8">
+            <h4>Historial de entregas:</h4>
+            {bitacoras[item.ID_Pieza]?.length > 0 ? (
+              <ul className="bitacora-list">
+                {bitacoras[item.ID_Pieza].map((entry, i) => (
+                  <li key={i}>
+                    <strong>{entry.cantidad_entregada}</strong> entregadas el{" "}
+                    {new Date(entry.fecha_entrega).toLocaleDateString()}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No hay entregas registradas.</p>
+            )}
+          </td>
+        </tr>
+      )}
+    </React.Fragment>
+  ))}
+</tbody>
 
-              </tr>
-            ))}
-          </tbody>
         </table>
       </section>
 

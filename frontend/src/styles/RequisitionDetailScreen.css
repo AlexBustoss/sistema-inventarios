@@ -342,3 +342,78 @@
   background-color: #4caf50;
   border-radius: 5px;
 }
+
+
+
+.bitacora-toggle {
+  background-color: #f0f0f0;
+  border: none;
+  color: #333;
+  padding: 4px 10px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin-top: 4px;
+  border-radius: 6px;
+}
+
+.bitacora-list {
+  list-style-type: none;
+  padding-left: 0;
+  margin-top: 10px;
+}
+
+.bitacora-list li {
+  padding: 6px 12px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  margin-bottom: 6px;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+
+
+.bitacora-button {
+  background-color: #d9e9ff;
+  color: #0056b3;
+  border: 1px solid #bcdfff;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.bitacora-button:hover {
+  background-color: #c0dcff;
+}
+
+.bitacora-row {
+  background-color: #f8f9fa;
+}
+
+.bitacora-row ul {
+  padding-left: 1.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.bitacora-row li {
+  margin-bottom: 4px;
+  font-size: 14px;
+  color: #333;
+}
+
+.historial-button {
+  background-color: #e8f0fe;
+  border: 1px solid #90caf9;
+  color: #0d47a1;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.historial-button:hover {
+  background-color: #bbdefb;
+}
